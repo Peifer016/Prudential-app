@@ -43,10 +43,28 @@
     >
       <nav class="flex flex-col">
         <a
-          class="flex items-center gap-4 px-8 py-5 text-[#0070c0] bg-blue-50/50 border-l-[6px] border-[#0070c0]"
+          [routerLink]="['/clientes']"
+          routerLinkActive="active"
+          class="flex items-center gap-4 px-8 py-5 text-[#0070c0] bg-blue-50/50 border-l-[6px] border-[#0070c0] cursor-pointer"
         >
           <i class="fa-solid fa-briefcase text-lg"></i>
           <span class="font-bold uppercase text-[12px] tracking-widest">Clientes</span>
+        </a>
+      </nav>
+    </div>
+    <div (click)="toggleMenu()" class="fixed inset-0 bg-black/30 z-[105] mt-16 md:hidden"></div>
+
+    <div
+      class="fixed top-16 left-0 w-full bg-white shadow-2xl z-[110] border-b border-gray-100 md:hidden"
+    >
+      <nav class="flex flex-col">
+        <a
+          [routerLink]="['/clientes']"
+          routerLinkActive="active"
+          class="flex items-center gap-4 px-8 py-5 text-[#0070c0] bg-blue-50/50 border-l-[6px] border-[#0070c0] cursor-pointer"
+        >
+          <i class="fa-solid fa-chart-line text-lg"></i>
+          <span class="font-bold uppercase text-[12px] tracking-widest">Valor Cuota</span>
         </a>
       </nav>
     </div>
