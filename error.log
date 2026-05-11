@@ -1,0 +1,29 @@
+The "prerender" option is not considered when "outputMode" is specified.
+[33mÔØ»[39m Building...
+[32mÔ£ö[39m Building...
+[1mInitial chunk files[22m  [2m | [22m[1mNames[22m             [2m | [22m [1mRaw size[22m
+[32mchunk-RE3AYQ23.js[39m    [2m | [22m[2m-[22m                 [2m | [22m  [36m1.06 MB[39m[2m | [22m
+[32mmain-F2KTD5U4.js[39m     [2m | [22m[2mmain[22m              [2m | [22m[36m309.34 kB[39m[2m | [22m
+[32mpolyfills-WE4QK65S.js[39m[2m | [22m[2mpolyfills[22m         [2m | [22m [36m89.60 kB[39m[2m | [22m
+[32mstyles-TGPKKMWE.css[39m  [2m | [22m[2mstyles[22m            [2m | [22m [36m27.47 kB[39m[2m | [22m
+[32mchunk-Y5RQAIA6.js[39m    [2m | [22m[2m-[22m                 [2m | [22m  [36m1.50 kB[39m[2m | [22m
+
+[1m [22m                    [2m | [22m[1mInitial total[22m     [2m | [22m  [1m[91m1.48 MB[39m[22m
+
+[1mLazy chunk files[22m     [2m | [22m[1mNames[22m             [2m | [22m [1mRaw size[22m
+[32mchunk-OEDLNSLD.js[39m    [2m | [22m[2m-[22m                 [2m | [22m[36m440.89 kB[39m[2m | [22m
+[32mchunk-FGAFPTGV.js[39m    [2m | [22m[2mclientes-routes[22m   [2m | [22m[36m363.36 kB[39m[2m | [22m
+[32mchunk-HCCSORIP.js[39m    [2m | [22m[2mvalor-cuota-routes[22m[2m | [22m [36m21.21 kB[39m[2m | [22m
+[32mchunk-HP3AMRAL.js[39m    [2m | [22m[2mchart[22m             [2m | [22m  [36m1.67 kB[39m[2m | [22m
+
+Application bundle generation failed. [5.416 seconds] - 2026-05-11T17:46:49.963Z
+
+Ôû▓ [WARNING] bundle initial exceeded maximum budget. Budget 500.00 kB was not met by 984.40 kB with a total of 1.48 MB.
+
+
+X [ERROR] bundle initial exceeded maximum budget. Budget 1.00 MB was not met by 484.40 kB with a total of 1.48 MB.
+
+
+X [ERROR] Cannot read properties of undefined (reading 'map')
+
+

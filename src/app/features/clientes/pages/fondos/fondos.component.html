@@ -1,0 +1,44 @@
+<div class="p-4 md:p-8 space-y-6 bg-[#f8f9fa] min-h-screen font-sans text-[#0e1b3d]">
+  
+  <div class="bg-[#ebedef] p-6 rounded-xl border border-gray-200/60 shadow-sm">
+    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-1">
+      Módulo de Clientes
+    </p>
+    <h1 class="text-3xl font-bold tracking-tight">Fondos</h1>
+  </div>
+
+  <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+    <div class="relative w-full">
+      <input 
+        type="text" 
+        placeholder="Buscar por nombre de fondos" 
+        class="w-full border border-gray-200 rounded-lg py-3 px-5 text-sm text-gray-600 focus:outline-none focus:border-[#0070c0] transition-colors placeholder:text-gray-300"
+      >
+      <button class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500">
+        <i class="fa-solid fa-circle-xmark text-lg"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    @for (fondo of fondos; track fondo.nombre) {
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow cursor-pointer">
+        <div class="h-1.5 w-full" [ngClass]="fondo.colorClase"></div>
+        
+        <div class="p-6 space-y-4">
+          <h2 class="text-2xl font-bold text-[#0070c0]">{{ fondo.nombre }}</h2>
+          
+          <div class="space-y-1">
+            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Perfil de tolerancia</p>
+            <p class="text-sm font-bold text-[#0e1b3d]">{{ fondo.perfil }}</p>
+          </div>
+
+          <div class="space-y-1">
+            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Estado</p>
+            <p class="text-sm font-bold text-[#0e1b3d]">{{ fondo.estado }}</p>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

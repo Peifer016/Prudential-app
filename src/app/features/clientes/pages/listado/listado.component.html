@@ -1,0 +1,284 @@
+<div class="flex flex-col space-y-4 p-4 md:p-6 bg-[#f8f9fa] min-h-screen font-sans">
+  <!-- 1. CABECERA -->
+  <div class="bg-[#ebedef] p-6 md:rounded-xl border border-gray-200/60 shadow-sm">
+    <p class="text-[9px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-1">
+      Módulo de Clientes
+    </p>
+    <h1 class="text-3xl font-bold text-[#0e1b3d] tracking-tight">Listado</h1>
+  </div>
+
+  <!-- 2. BARRA DE BÚSQUEDA Y FILTROS -->
+  <div class="flex gap-2">
+    <!-- Input Principal -->
+    <div class="relative flex-1">
+      <input
+        type="text"
+        (input)="onSearch($event)"
+        [(ngModel)]="busqueda"
+        placeholder="Buscar por nombre y apellido, número de documento, número telefónico o correo electrónico"
+        class="w-full pl-4 pr-10 py-3 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#0070c0] shadow-sm transition-colors placeholder:text-gray-300"
+      />
+      @if (busqueda) {
+        <i
+          (click)="busqueda = ''; onSearch({ target: { value: '' } })"
+          class="fa-solid fa-circle-xmark absolute right-3 top-3.5 text-gray-300 cursor-pointer hover:text-gray-500 transition-colors"
+        ></i>
+      }
+    </div>
+
+    <!-- Contenedor del Botón y Modal de Filtros -->
+    <div class="relative">
+      <button
+        (click)="toggleFiltros()"
+        class="bg-[#0e1b3d] text-white min-w-[3rem] h-12 px-4 rounded-lg flex items-center justify-center gap-2 shadow-sm hover:bg-[#1a2b56] transition-colors"
+      >
+        <i class="fa-solid fa-filter text-sm"></i>
+        <span class="hidden md:inline text-sm font-medium"> Filtros de Búsqueda </span>
+      </button>
+
+      <!-- MODAL DESPLEGABLE DE FILTROS ACTUALIZADO -->
+      @if (mostrarFiltros) {
+        <div
+          class="absolute right-0 top-14 z-50 w-[300px] bg-white border border-gray-100 rounded-2xl shadow-2xl p-6 animate-fade-in"
+        >
+          <div class="space-y-5">
+            <!-- Período de creación -->
+            <div>
+              <label class="block text-[14px] text-[#34445c] mb-2 font-medium"
+                >Período de creación</label
+              >
+              <div class="relative">
+                <input
+                  type="date"
+                  class="w-full p-3 border border-gray-200 rounded-xl text-sm placeholder:text-gray-300 focus:outline-none focus:border-[#0070c0]"
+                />
+              </div>
+            </div>
+
+            <!-- Perfil de riesgo (Selección Única) -->
+            <div>
+              <label class="block text-[14px] text-[#34445c] mb-2 font-medium"
+                >Perfil de riesgo</label
+              >
+              <div class="space-y-3">
+                @for (opcion of ['Conservador', 'Moderado', 'Agresivo']; track opcion) {
+                  <label
+                    class="flex items-center gap-3 text-[14px] text-[#34445c] cursor-pointer group"
+                  >
+                    <input
+                      type="checkbox"
+                      [checked]="filtros.perfil === opcion"
+                      (change)="seleccionarUnico('perfil', opcion)"
+                      class="w-5 h-5 rounded border-gray-200 text-[#0070c0] focus:ring-0 cursor-pointer"
+                    />
+                    <span class="group-hover:text-[#0070c0] transition-colors">{{ opcion }}</span>
+                  </label>
+                }
+              </div>
+            </div>
+
+            <!-- Fondo con suscripciones -->
+            <div>
+              <label class="block text-[14px] text-[#34445c] mb-2 font-medium"
+                >Fondo con suscripciones</label
+              >
+              <div class="relative">
+                <select
+                  class="w-full p-3 border border-gray-200 rounded-xl text-sm text-[#34445c] focus:outline-none focus:border-[#0070c0] appearance-none bg-white"
+                >
+                  <option value="" disabled selected>Selecciona un tipo de fondo</option>
+                  <option value="renta_variable">Fondo Renta Variable</option>
+                  <option value="renta_fija">Fondo Renta Fija</option>
+                  <option value="todos">Todos los fondos</option>
+                </select>
+                <i
+                  class="fa-solid fa-chevron-down absolute right-4 top-4 text-gray-300 text-[10px]"
+                ></i>
+              </div>
+            </div>
+
+            <!-- Serie -->
+            <div>
+              <label class="block text-[14px] text-[#34445c] mb-2 font-medium">Serie</label>
+              <div class="relative">
+                <select
+                  class="w-full p-3 border border-gray-200 rounded-xl text-sm text-[#34445c] focus:outline-none focus:border-[#0070c0] appearance-none bg-white"
+                >
+                  <option value="" disabled selected>Selecciona una serie</option>
+                  <option value="serie1">Serie 1</option>
+                  <option value="serie2">Serie 2</option>
+                </select>
+                <i
+                  class="fa-solid fa-chevron-down absolute right-4 top-4 text-gray-300 text-[10px]"
+                ></i>
+              </div>
+            </div>
+
+            <!-- Tratamiento de datos (Selección Única) -->
+            <div>
+              <label class="block text-[14px] text-[#34445c] mb-2 font-medium"
+                >Tratamiento de datos</label
+              >
+              <div class="space-y-3">
+                @for (opcion of ['Sí', 'No']; track opcion) {
+                  <label
+                    class="flex items-center gap-3 text-[14px] text-[#34445c] cursor-pointer group"
+                  >
+                    <input
+                      type="checkbox"
+                      [checked]="filtros.tratamiento === opcion"
+                      (change)="seleccionarUnico('tratamiento', opcion)"
+                      class="w-5 h-5 rounded border-gray-200 text-[#0070c0] focus:ring-0 cursor-pointer"
+                    />
+                    <span class="group-hover:text-[#0070c0] transition-colors">{{ opcion }}</span>
+                  </label>
+                }
+              </div>
+            </div>
+
+            <!-- Estado (Selección Única) -->
+            <div>
+              <label class="block text-[14px] text-[#34445c] mb-2 font-medium">Estado</label>
+              <div class="space-y-3">
+                @for (opcion of ['Activo', 'Inactivo', 'Bloqueado']; track opcion) {
+                  <label
+                    class="flex items-center gap-3 text-[14px] text-[#34445c] cursor-pointer group"
+                  >
+                    <input
+                      type="checkbox"
+                      [checked]="filtros.estado === opcion"
+                      (change)="seleccionarUnico('estado', opcion)"
+                      class="w-5 h-5 rounded border-gray-200 text-[#0070c0] focus:ring-0 cursor-pointer"
+                    />
+                    <span class="group-hover:text-[#0070c0] transition-colors">{{ opcion }}</span>
+                  </label>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- 3. MENSAJE DE RESULTADOS (Referencia: image_7dd94f.png) -->
+  @if (!cargando && busqueda.length > 0) {
+    <div class="flex justify-center py-2 animate-fade-in">
+      <p class="text-[14px] text-[#0e1b3d]">
+        <span class="font-bold">{{ clientes.length }} resultados encontrados</span>
+        para los datos ingresados <span class="text-gray-500 italic">"{{ busqueda }}"</span>
+      </p>
+    </div>
+  }
+
+  <!-- 4. TABLA CON OVERLAY DE CARGA (Referencia: image_7de4d4.png) -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden relative">
+    <!-- Spinner y Blur de carga -->
+    @if (cargando) {
+      <div
+        class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/40 backdrop-blur-[2px] transition-all"
+      >
+        <div class="flex flex-col items-center gap-4 text-center px-4">
+          <i class="fa-solid fa-circle-notch fa-spin text-3xl text-[#0e1b3d]"></i>
+          <p class="text-[13px] font-medium text-[#0e1b3d]">
+            buscando coincidencias para los datos ingresados
+            <span class="font-bold">"{{ busqueda }}"</span>
+          </p>
+        </div>
+      </div>
+    }
+
+    <!-- Tabla -->
+    <div class="overflow-x-auto transition-all duration-300" [class.blur-md]="cargando">
+      <table class="w-full text-left border-collapse min-w-[900px]">
+        <thead class="bg-[#0070c0] text-white text-[12px] uppercase tracking-wider">
+          <tr>
+            <th class="p-4 font-semibold whitespace-nowrap">Fecha de creación</th>
+            <th class="p-4 font-semibold whitespace-nowrap">Nombres y Apellidos</th>
+            <th class="p-4 font-semibold whitespace-nowrap">N° Documento</th>
+            <th class="p-4 font-semibold whitespace-nowrap">N° Celular</th>
+            <th class="p-4 font-semibold whitespace-nowrap">Correo Electrónico</th>
+            <th class="p-4 font-semibold whitespace-nowrap">Estado</th>
+            <th class="p-4 font-semibold text-center whitespace-nowrap">Acción</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 text-[13px] text-gray-600 bg-white">
+          <tr
+            *ngFor="let c of clientes"
+            class="hover:bg-blue-50/40 cursor-pointer transition-all duration-200"
+          >
+            <td class="p-4 whitespace-nowrap">{{ c.fecha }}</td>
+            <td class="p-4">
+              <div class="flex items-center gap-2">
+                <span class="font-medium text-gray-800 whitespace-nowrap">{{ c.nombre }}</span>
+                <i class="fa-regular fa-copy text-gray-300 text-xs hover:text-[#0070c0]"></i>
+              </div>
+            </td>
+            <td class="p-4 whitespace-nowrap">{{ c.doc }}</td>
+            <td class="p-4 whitespace-nowrap">{{ c.cel }}</td>
+            <td class="p-4 whitespace-nowrap">{{ c.correo }}</td>
+            <td class="p-4">
+              <span [class]="'px-3 py-1 rounded text-[11px] font-bold ' + getEstadoStyle(c.estado)">
+                {{ c.estado }}
+              </span>
+            </td>
+            <td class="p-4 text-center">
+              <button
+                class="text-[#0070c0] font-bold flex items-center gap-1 mx-auto hover:underline"
+              >
+                Ver más <i class="fa-solid fa-chevron-right text-[10px]"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Barra de progreso visual -->
+    <div class="h-1 bg-gray-100 w-full relative">
+      <div
+        class="absolute top-0 left-0 h-full bg-[#0070c0] transition-all duration-500"
+        [style.width.%]="cargando ? 60 : 0"
+      ></div>
+    </div>
+  </div>
+
+  <!-- 5. PAGINACIÓN (Referencia: image_7e4e6e.png) -->
+  <div
+    class="bg-white border border-gray-200 rounded-xl px-6 py-4 flex flex-col md:flex-row justify-between items-center shadow-sm"
+  >
+    <div class="text-[#4b5563] text-[13px] font-medium mb-4 md:mb-0">
+      Mostrando intervalo 1-10 de 100 clientes
+    </div>
+
+    <div class="flex items-center gap-1 text-gray-500 text-sm">
+      <button class="p-2 text-gray-300 cursor-not-allowed">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <button
+        class="w-8 h-8 rounded-lg bg-[#748294] text-white font-bold flex items-center justify-center shadow-sm"
+      >
+        1
+      </button>
+      <button
+        class="w-8 h-8 rounded-lg font-medium text-[#4b5563] hover:bg-gray-100 flex items-center justify-center"
+      >
+        2
+      </button>
+      <span class="px-2 text-gray-400">...</span>
+      <button
+        class="w-8 h-8 rounded-lg font-medium text-[#4b5563] hover:bg-gray-100 flex items-center justify-center"
+      >
+        9
+      </button>
+      <button
+        class="w-8 h-8 rounded-lg font-medium text-[#4b5563] hover:bg-gray-100 flex items-center justify-center"
+      >
+        10
+      </button>
+      <button class="p-2 text-[#0e1b3d] hover:bg-gray-100 rounded-full">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</div>
