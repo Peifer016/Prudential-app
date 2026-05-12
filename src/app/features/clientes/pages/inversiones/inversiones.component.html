@@ -1,4 +1,5 @@
 <div class="p-0 md:p-8 space-y-6 bg-[#f8f9fa] min-h-screen font-sans text-[#0e1b3d]">
+  <!-- CABECERA: MODULO Y NAVEGACIÓN -->
   <div
     class="bg-[#ebedef] p-6 md:rounded-xl border-b md:border border-gray-200/60 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6"
   >
@@ -19,6 +20,7 @@
     </div>
   </div>
 
+  <!-- FILTROS Y CLIENTE -->
   <div class="bg-white p-6 md:rounded-xl shadow-sm border border-gray-100">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div class="flex flex-col">
@@ -35,7 +37,6 @@
             <i class="fa-solid fa-chevron-down text-[10px] text-gray-300"></i>
           </div>
         </div>
-
         <div class="relative min-w-[180px]">
           <div
             class="border border-gray-200 rounded-lg px-4 py-2.5 text-[12px] flex justify-between items-center cursor-pointer"
@@ -44,16 +45,6 @@
             <i class="fa-solid fa-chevron-down text-[10px] text-gray-300"></i>
           </div>
         </div>
-
-        <div class="relative min-w-[180px]">
-          <div class="relative">
-            <input
-              type="date"
-              class="w-full p-3 border border-gray-200 rounded-xl text-sm placeholder:text-gray-300 focus:outline-none focus:border-[#0070c0]"
-            />
-          </div>
-        </div>
-
         <button
           (click)="descargarEECC()"
           class="bg-[#0e1b3d] text-white px-4 py-2.5 rounded-lg text-[11px] font-bold flex items-center gap-2 hover:bg-[#1a2b56] transition-all ml-2"
@@ -66,7 +57,7 @@
 
   @if (loading) {
     <div
-      class="bg-white rounded-xl border border-gray-100 p-20 flex flex-col items-center justify-center space-y-4 min-h-[400px] animate-pulse"
+      class="bg-white rounded-xl border border-gray-100 p-20 flex flex-col items-center justify-center space-y-4 min-h-[400px]"
     >
       <div
         class="w-10 h-10 border-4 border-[#0070c0] border-t-transparent rounded-full animate-spin"
@@ -75,6 +66,7 @@
     </div>
   } @else {
     <div class="space-y-6 animate-fade-in">
+      <!-- TARJETAS DE RENDIMIENTO -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         @for (item of rendimientos; track item.label) {
           <div
@@ -86,179 +78,163 @@
         }
       </div>
 
+      <!-- GRÁFICO 1 -->
       <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
         <div class="p-8">
           <div class="flex flex-col md:flex-row gap-4 mb-6">
-            <div
-              class="flex-grow bg-[#0070c0] rounded-lg px-6 py-3 flex items-center justify-between text-white shadow-sm"
-            >
-              <div class="flex items-baseline gap-1">
-                <span class="text-lg font-bold">Saldo y Suscripciones Netas</span>
-              </div>
+            <div class="flex-grow bg-[#0070c0] rounded-lg px-6 py-3 flex items-center text-white">
+              <span class="text-lg font-bold">Suscripción neta y ganancia acumulada</span>
             </div>
-
             <button
               (click)="guardarImagen('barras')"
-              class="bg-[#748294] hover:bg-[#5a697a] text-white px-5 py-3 rounded-lg flex items-center gap-3 text-[12px] font-bold transition-all shadow-sm"
+              class="bg-[#748294] hover:bg-[#5a697a] text-white px-5 py-3 rounded-lg flex items-center gap-3 text-[12px] font-bold transition-all"
             >
-              Guardar imagen <i class="fa-solid fa-file-image text-base"></i>
+              Guardar imagen <i class="fa-solid fa-file-image"></i>
             </button>
           </div>
-          <div style="display: block; height: 300px">
-            <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="'bar'">
-            </canvas>
+          <div class="h-[400px]">
+            <canvas
+              baseChart
+              [data]="barChartData"
+              [options]="barChartOptions"
+              [type]="'bar'"
+            ></canvas>
           </div>
+        </div>
+      </div>
 
+      <!-- GRÁFICO 2 -->
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="p-8">
+          <div class="flex flex-col md:flex-row gap-4 mb-6">
+            <div class="flex-grow bg-[#0070c0] rounded-lg px-6 py-3 flex items-center text-white">
+              <span class="text-lg font-bold">Saldo y suscripciones netas</span>
+            </div>
+            <button
+              (click)="guardarImagen('lineas')"
+              class="bg-[#748294] hover:bg-[#5a697a] text-white px-5 py-3 rounded-lg flex items-center gap-3 text-[12px] font-bold transition-all"
+            >
+              Guardar imagen <i class="fa-solid fa-file-image"></i>
+            </button>
+          </div>
+          <div class="h-[400px] relative">
+            <canvas
+              baseChart
+              [data]="lineChartData"
+              [options]="lineChartOptions"
+              [type]="'line'"
+            ></canvas>
+          </div>
           <div class="flex justify-center items-center gap-10 mt-6">
             <div class="flex items-center gap-3">
-              <div class="w-4 h-4 bg-[#93c5fd] rounded-sm"></div>
-              <span class="text-[11px] text-gray-500 font-medium">Suscripción neta</span>
+              <div class="w-4 h-4 bg-[#f97316] rounded-sm"></div>
+              <span class="text-[11px] text-gray-500 font-bold uppercase tracking-tighter"
+                >Saldo actual</span
+              >
             </div>
             <div class="flex items-center gap-3">
-              <div class="w-4 h-4 bg-[#3b3191] rounded-sm"></div>
-              <span class="text-[11px] text-gray-500 font-medium"
-                >Ganancias / pérdida acumulada</span
+              <div class="w-4 h-4 bg-[#0e1b3d] rounded-sm"></div>
+              <span class="text-[11px] text-gray-500 font-bold uppercase tracking-tighter"
+                >Suscripción neta</span
               >
             </div>
           </div>
         </div>
       </div>
 
-      <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden mb-6">
-        <div class="p-8">
-          <div class="flex flex-col md:flex-row gap-4 mb-6">
-            <div
-              class="flex-grow bg-[#0070c0] rounded-lg px-6 py-3 flex items-center justify-between text-white shadow-sm"
-            >
-              <div class="flex items-baseline gap-1">
-                <span class="text-lg font-bold">Saldo y Suscripciones Netas</span>
-              </div>
-            </div>
-
-            <button
-              (click)="guardarImagen('distribucion')"
-              class="bg-[#748294] hover:bg-[#5a697a] text-white px-5 py-3 rounded-lg flex items-center gap-3 text-[12px] font-bold transition-all shadow-sm"
-            >
-              Guardar imagen <i class="fa-solid fa-file-image text-base"></i>
-            </button>
-          </div>
-
-          <div class="h-72 mb-6">
-            <canvas baseChart [data]="areaChartData" [options]="areaChartOptions" [type]="'line'">
-            </canvas>
-          </div>
-
-          <div class="flex justify-center items-center gap-10">
-            <div class="flex items-center gap-3">
-              <span class="w-4 h-4 bg-[#f97316] rounded-sm"></span>
-              <span class="text-[11px] text-gray-500 font-medium">Salto actual</span>
-            </div>
-            <div class="flex items-center gap-3">
-              <span class="w-4 h-4 bg-[#0e1b3d] rounded-sm"></span>
-              <span class="text-[11px] text-gray-500 font-medium">Suscripción neta</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <!-- GRÁFICO 3: DISTRIBUCIONES (CIRCULARES) -->
       <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-8">
-        <div class="flex flex-col md:flex-row gap-4 mb-6">
+        <!-- Cabecera con Montos y Botón Guardar -->
+        <div class="flex flex-col md:flex-row gap-4 mb-8">
           <div
-            class="flex-grow bg-[#0070c0] rounded-lg px-6 py-3 flex items-center justify-between text-white shadow-sm"
+            class="flex-grow bg-[#0070c0] rounded-lg px-6 py-3 flex flex-col md:flex-row justify-between items-center text-white gap-4"
           >
-            <div class="flex items-center gap-3">
-              <i class="fa-solid fa-chart-column text-lg"></i>
-              <div class="flex items-baseline gap-1">
-                <span class="text-lg font-bold">{{ totalDolarizado | number: '1.2-2' }}</span>
+            <div class="flex items-center gap-2 border-r border-white/20 pr-6">
+              <span class="text-lg font-bold">{{ totalDolarizado | number: '1.2-2' }}</span>
+              <span class="text-[10px] uppercase opacity-80 font-medium tracking-wider"
+                >Dolarizado</span
+              >
+            </div>
+            <div class="flex gap-8">
+              <div class="flex items-center gap-2">
+                <span class="text-lg font-bold">S/ {{ totalSoles | number: '1.2-2' }}</span>
                 <span class="text-[10px] uppercase opacity-80 font-medium tracking-wider"
-                  >Dolarizado</span
+                  >Soles</span
+                >
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-lg font-bold">$ {{ totalDolares | number: '1.0-0' }}</span>
+                <span class="text-[10px] uppercase opacity-80 font-medium tracking-wider"
+                  >Dólares</span
                 >
               </div>
             </div>
-
-            <div class="flex items-baseline gap-1">
-              <span class="text-[11px] opacity-80 font-bold">S/</span>
-              <span class="text-lg font-bold">{{ totalSoles | number: '1.2-2' }}</span>
-              <span class="text-[10px] uppercase opacity-80 font-medium tracking-wider ml-1"
-                >Soles</span
-              >
-            </div>
-
-            <div class="flex items-baseline gap-1">
-              <span class="text-[11px] opacity-80 font-bold">$</span>
-              <span class="text-lg font-bold">{{ totalDolares | number: '1.0-0' }}</span>
-              <span class="text-[10px] uppercase opacity-80 font-medium tracking-wider ml-1"
-                >Dólares</span
-              >
-            </div>
           </div>
-
           <button
             (click)="guardarImagen('distribucion')"
-            class="bg-[#748294] hover:bg-[#5a697a] text-white px-5 py-3 rounded-lg flex items-center gap-3 text-[12px] font-bold transition-all shadow-sm"
+            class="bg-[#748294] hover:bg-[#5a697a] text-white px-5 py-3 rounded-lg flex items-center gap-3 text-[12px] font-bold transition-all self-center md:self-stretch"
           >
-            Guardar imagen <i class="fa-solid fa-file-image text-base"></i>
+            Guardar imagen <i class="fa-solid fa-file-image"></i>
           </button>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+          <!-- Distribución por fondo -->
           <div class="flex flex-col items-center">
-            <h4 class="text-[15px] font-bold mb-6 text-[#0e1b3d]">Distribución por fondo</h4>
-            <div class="w-44 h-44 mb-6">
+            <h4 class="text-[14px] font-bold mb-6 uppercase tracking-tight">
+              Distribución por fondo
+            </h4>
+            <div class="w-48 h-48 mb-6">
               <canvas baseChart [data]="fondoData" [options]="pieOptions" [type]="'pie'"></canvas>
             </div>
-            <ul class="text-[11px] space-y-2 w-full px-4">
-              <li class="flex items-center gap-2 text-gray-600">
-                <span class="w-3 h-3 bg-[#0e1b3d] rounded-sm"></span> Prudential Estrategia Global
-                USD
-              </li>
-              <li class="flex items-center gap-2 text-gray-600">
-                <span class="w-3 h-3 bg-[#0070c0] rounded-sm"></span> Prudential Renta Variable
-                Global
-              </li>
-              <li class="flex items-center gap-2 text-gray-600">
-                <span class="w-3 h-3 bg-[#22d3ee] rounded-sm"></span> Moneda Local
-              </li>
-              <li class="flex items-center gap-2 text-gray-600">
-                <span class="w-3 h-3 bg-[#facc15] rounded-sm"></span> Corto Plazo USD
-              </li>
-              <li class="flex items-center gap-2 text-gray-600">
-                <span class="w-3 h-3 bg-[#a855f7] rounded-sm"></span> PMV
+            <ul class="text-[10px] space-y-2 w-full">
+              <li class="flex items-center gap-2" *ngFor="let fondo of fondosList">
+                <span
+                  class="w-3 h-3 rounded-sm flex-shrink-0"
+                  [style.backgroundColor]="fondo.color"
+                ></span>
+                <span class="truncate text-gray-500 font-medium">{{ fondo.nombre }}</span>
+                <span class="ml-auto font-bold text-[#0e1b3d]">{{ fondo.porcentaje }}%</span>
               </li>
             </ul>
           </div>
 
+          <!-- Distribución por moneda -->
           <div class="flex flex-col items-center">
-            <h4 class="text-[15px] font-bold mb-6 text-[#0e1b3d]">Distribución por moneda</h4>
-            <div class="w-44 h-44 mb-6">
+            <h4 class="text-[14px] font-bold mb-6 uppercase tracking-tight">
+              Distribución por moneda
+            </h4>
+            <div class="w-48 h-48 mb-6">
               <canvas baseChart [data]="monedaData" [options]="pieOptions" [type]="'pie'"></canvas>
             </div>
-            <ul class="text-[11px] space-y-2 w-full px-12">
-              <li class="flex items-center gap-2 text-gray-600">
-                <span class="w-3 h-3 bg-[#0e1b3d] rounded-sm"></span> Dólares
-              </li>
-              <li class="flex items-center gap-2 text-gray-600">
-                <span class="w-3 h-3 bg-[#22d3ee] rounded-sm"></span> Soles
+            <ul class="text-[10px] space-y-2 w-full px-4">
+              <li class="flex items-center gap-2" *ngFor="let moneda of monedasList">
+                <span
+                  class="w-3 h-3 rounded-sm flex-shrink-0"
+                  [style.backgroundColor]="moneda.color"
+                ></span>
+                <span class="text-gray-500 font-medium">{{ moneda.nombre }}</span>
+                <span class="ml-auto font-bold text-[#0e1b3d]">{{ moneda.porcentaje }}%</span>
               </li>
             </ul>
           </div>
 
+          <!-- Distribución por clase de activo -->
           <div class="flex flex-col items-center">
-            <h4 class="text-[15px] font-bold mb-6 text-[#0e1b3d]">
+            <h4 class="text-[14px] font-bold mb-6 uppercase tracking-tight">
               Distribución por clase de activo
             </h4>
-            <div class="w-44 h-44 mb-6">
+            <div class="w-48 h-48 mb-6">
               <canvas baseChart [data]="activoData" [options]="pieOptions" [type]="'pie'"></canvas>
             </div>
-            <ul class="text-[11px] space-y-2 w-full px-12">
-              <li class="flex items-center gap-2 text-gray-600">
-                <span class="w-3 h-3 bg-[#ff0055] rounded-sm"></span> Money Market
-              </li>
-              <li class="flex items-center gap-2 text-gray-600">
-                <span class="w-3 h-3 bg-[#f97316] rounded-sm"></span> Renta Fija
-              </li>
-              <li class="flex items-center gap-2 text-gray-600">
-                <span class="w-3 h-3 bg-[#22c55e] rounded-sm"></span> Renta Variable
+            <ul class="text-[10px] space-y-2 w-full px-4">
+              <li class="flex items-center gap-2" *ngFor="let activo of activosList">
+                <span
+                  class="w-3 h-3 rounded-sm flex-shrink-0"
+                  [style.backgroundColor]="activo.color"
+                ></span>
+                <span class="text-gray-500 font-medium">{{ activo.nombre }}</span>
+                <span class="ml-auto font-bold text-[#0e1b3d]">{{ activo.porcentaje }}%</span>
               </li>
             </ul>
           </div>

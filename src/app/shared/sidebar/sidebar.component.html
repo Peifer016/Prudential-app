@@ -1,14 +1,64 @@
 <aside class="hidden md:flex flex-col w-24 bg-white border-r border-gray-200 h-full py-6">
-  <div 
-    routerLink="/clientes"
-    routerLinkActive="border-[#0070c0] text-[#0070c0]"
-    [routerLinkActiveOptions]="{exact: false}"
-    class="flex flex-col items-center gap-1 border-l-4 border-transparent text-gray-400 py-4 cursor-pointer transition-all hover:text-[#0070c0]"
-  >
-    <i class="fa-solid fa-briefcase text-2xl"></i>
-    <span class="text-[10px] font-bold uppercase">Clientes</span>
+  <!-- Clientes con Submenú Desplegable -->
+  <div class="relative sidebar-menu-item">
+    <div 
+      (click)="toggleSubmenu()"
+      routerLinkActive="border-[#0070c0] text-[#0070c0]"
+      [routerLinkActiveOptions]="{exact: false}"
+      class="flex flex-col items-center gap-1 border-l-4 border-transparent text-gray-400 py-4 cursor-pointer transition-all hover:text-[#0070c0]"
+    >
+      <i class="fa-solid fa-briefcase text-2xl"></i>
+      <span class="text-[10px] font-bold uppercase">Clientes</span>
+      <i class="fa-solid fa-chevron-down text-[8px] mt-1 transition-transform" [class.rotate-180]="submenuOpen"></i>
+    </div>
+    
+    <!-- Submenú desplegable -->
+    <div *ngIf="submenuOpen" class="absolute left-full top-0 ml-2 bg-white rounded-lg shadow-lg border border-gray-100 w-48 z-50">
+      <div class="py-2">
+        <a 
+          routerLink="/clientes/listado"
+          routerLinkActive="bg-[#0070c0] text-white"
+          (click)="cerrarSubmenu()"
+          class="flex items-center gap-3 px-4 py-2.5 text-[12px] text-gray-600 hover:bg-gray-50 transition-colors"
+        >
+          <i class="fa-solid fa-list text-xs w-4"></i>
+          <span>Listado</span>
+        </a>
+        
+        <a 
+          routerLink="/clientes/detalle"
+          routerLinkActive="bg-[#0070c0] text-white"
+          (click)="cerrarSubmenu()"
+          class="flex items-center gap-3 px-4 py-2.5 text-[12px] text-gray-600 hover:bg-gray-50 transition-colors"
+        >
+          <i class="fa-solid fa-user text-xs w-4"></i>
+          <span>Detalle</span>
+        </a>
+        
+        <a 
+          routerLink="/clientes/inversiones"
+          routerLinkActive="bg-[#0070c0] text-white"
+          (click)="cerrarSubmenu()"
+          class="flex items-center gap-3 px-4 py-2.5 text-[12px] text-gray-600 hover:bg-gray-50 transition-colors"
+        >
+          <i class="fa-solid fa-chart-line text-xs w-4"></i>
+          <span>Inversiones</span>
+        </a>
+        
+        <a 
+          routerLink="/clientes/fondos"
+          routerLinkActive="bg-[#0070c0] text-white"
+          (click)="cerrarSubmenu()"
+          class="flex items-center gap-3 px-4 py-2.5 text-[12px] text-gray-600 hover:bg-gray-50 transition-colors"
+        >
+          <i class="fa-solid fa-building-columns text-xs w-4"></i>
+          <span>Fondos</span>
+        </a>
+      </div>
+    </div>
   </div>
 
+  <!-- Valor Cuota -->
   <div 
     routerLink="/valor-cuota"
     routerLinkActive="border-[#0070c0] text-[#0070c0]"
