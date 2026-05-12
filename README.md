@@ -1,52 +1,226 @@
-# PrudentialApp
+# Prudential SAF - Portal de Gestión de Inversiones
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.24.
+Aplicación web moderna para la gestión integral de clientes, fondos de inversión y seguimiento de cuotas. Construida con Angular 20 y Tailwind CSS.
 
-## Development server
+## 📋 Descripción del Proyecto
 
-To start a local development server, run:
+**Prudential SAF** es una plataforma destinada a asesores financieros para:
 
-```bash
-ng serve
-```
+- Consultar y gestionar clientes
+- Visualizar detalles de inversiones y fondos
+- Monitorear el valor de cuotas en tiempo real
+- Acceso rápido desde dispositivos móviles y desktop
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### Características Principales
 
-## Code scaffolding
+- 📱 **Diseño Responsivo** - Totalmente adaptado a mobile y desktop
+- 🔐 **Interfaz Segura** - Header autenticado con información de asesor
+- 📊 **Gestión de Clientes** - Listado, detalle, fondos e inversiones
+- 💰 **Seguimiento de Cuotas** - Valores actualizados
+- ⚡ **Navegación Eficiente** - Sidebar intuitivo
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+---
 
-```bash
-ng generate component component-name
-```
+## 🚀 Inicio Rápido
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Requisitos Previos
 
-```bash
-ng generate --help
-```
+- Node.js (v18 o superior)
+- npm o yarn
+- Angular CLI v20+
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+### Instalación
 
 ```bash
-ng test
+# Clonar el repositorio
+git clone <repository-url>
+cd prudential-app
+
+# Instalar dependencias
+npm install
 ```
 
-## Running end-to-end tests
+### Servidor de Desarrollo
 
-For end-to-end (e2e) testing, run:
+```bash
+npm start
+```
+
+Abre tu navegador en `http://localhost:4200/`. La aplicación se recarga automáticamente al modificar archivos fuente.
+
+---
+
+## 📁 Estructura del Proyecto
+
+```
+src/
+├── app/
+│   ├── features/
+│   │   ├── clientes/              # Módulo de gestión de clientes
+│   │   │   └── pages/
+│   │   │       ├── listado/       # Lista de clientes
+│   │   │       ├── detalle/       # Detalle del cliente
+│   │   │       ├── fondos/        # Fondos del cliente
+│   │   │       └── inversiones/   # Inversiones del cliente
+│   │   └── valor-cuota/           # Módulo de seguimiento de cuotas
+│   │       └── pages/
+│   │           └── detalle/       # Detalles de cuotas
+│   ├── layouts/
+│   │   └── main-layout/           # Layout principal con header y sidebar
+│   ├── shared/                    # Componentes reutilizables
+│   │   ├── header/                # Encabezado con datos de asesor
+│   │   └── sidebar/               # Navegación principal
+│   ├── assets/                    # Recursos e imágenes
+│   └── app.config.ts              # Configuración global
+├── index.html
+├── main.ts
+└── styles.css
+
+```
+
+---
+
+## 🛠️ Comandos Disponibles
+
+| Comando         | Descripción                                                 |
+| --------------- | ----------------------------------------------------------- |
+| `npm start`     | Inicia el servidor de desarrollo en `http://localhost:4200` |
+| `npm run build` | Compila la aplicación para producción en `dist/`            |
+| `npm test`      | Ejecuta pruebas unitarias con Karma                         |
+| `npm run watch` | Compila en modo observador                                  |
+
+---
+
+## 🎨 Tecnologías Utilizadas
+
+- **Angular 20** - Framework principal
+- **TypeScript** - Lenguaje de programación
+- **Tailwind CSS** - Estilos y utilidades CSS
+- **RxJS** - Programación reactiva
+- **Font Awesome** - Iconografía
+- **Karma** - Test runner
+
+---
+
+## 📱 Características de Diseño
+
+### Header
+
+- Logo y nombre de la empresa
+- Información del asesor (nombre y rol)
+- Avatar y opciones de usuario
+- Menú responsivo para móvil
+
+### Sidebar
+
+- Navegación principal
+- Acceso a módulos: Clientes y Valor de Cuota
+- Diseño colapsable
+
+### Paleta de Colores
+
+- **Primario**: `#0070c0` (Azul Prudential)
+- **Fondo**: Blanco/Gris claro
+- **Acentos**: Tonos azules y blancos
+
+---
+
+## 📦 Instalación de Dependencias
+
+Las dependencias principales incluyen:
+
+- `@angular/common` - Utilidades comunes de Angular
+- `@angular/forms` - Manejo de formularios
+- `@angular/platform-browser` - Plataforma web
+- `tailwindcss` - Framework de CSS
+
+```bash
+npm install
+```
+
+---
+
+## 🧪 Pruebas
+
+### Ejecutar Tests Unitarios
+
+```bash
+npm test
+```
+
+Esto ejecutará todas las pruebas bajo la carpeta `src/**/*.spec.ts` usando Karma.
+
+---
+
+## 🏗️ Build para Producción
+
+```bash
+npm run build
+```
+
+Los archivos compilados se encontrarán en el directorio `dist/prudential-app/`.
+
+### Optimizaciones Incluidas
+
+- Minificación de código
+- Tree-shaking de dependencias no utilizadas
+- Hashing de archivos para caché busting
+- Pre-renderizado (cuando aplique)
+
+---
+
+## 🤝 Contribución
+
+Para contribuir al proyecto:
+
+1. Crea una rama para tu feature
+2. Realiza los cambios y commits descriptivos
+3. Push a tu rama
+4. Abre un Pull Request
+
+---
+
+## 📝 Configuración de Estilos
+
+El proyecto utiliza **Tailwind CSS** para estilos. La configuración se encuentra en `tailwind.config.js`.
+
+### Personalización de Colores
+
+Modifica `tailwind.config.js` para cambiar la paleta de colores global.
+
+---
+
+## 🐛 Solución de Problemas
+
+### Imagen no se carga
+
+- Verifica que los archivos estén en `src/assets/`
+- Usa rutas absolutas: `/assets/icons/nombre.png`
+
+### Puerto 4200 en uso
+
+```bash
+ng serve --port 4300
+```
+
+### Dependencias desactualizadas
+
+```bash
+npm install
+npm audit fix
+```
+
+---
+
+## 📞 Soporte
+
+Para reportar bugs o sugerencias, contacta al equipo de desarrollo.
+
+---
+
+## 📄 Licencia
+
+Este proyecto es propiedad de Prudential SAF.
 
 ```bash
 ng e2e
