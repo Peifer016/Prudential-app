@@ -67,11 +67,14 @@ src/
 │   │           └── detalle/       # Detalles de cuotas
 │   ├── layouts/
 │   │   └── main-layout/           # Layout principal con header y sidebar
+│   ├── services/                  # Servicios para consumir APIs del backend
+│   │   ├── clientes.service.ts    # Servicio de gestión de clientes
+│   │   └── valor-cuota.service.ts # Servicio de valores de cuota
 │   ├── shared/                    # Componentes reutilizables
 │   │   ├── header/                # Encabezado con datos de asesor
 │   │   └── sidebar/               # Navegación principal
 │   ├── assets/                    # Recursos e imágenes
-│   └── app.config.ts              # Configuración global
+│   └── app.config.ts              # Configuración global (HttpClient)
 ├── index.html
 ├── main.ts
 └── styles.css
@@ -102,7 +105,36 @@ src/
 
 ---
 
-## 📱 Características de Diseño
+## � Servicios y APIs
+
+La aplicación consume datos del backend a través de servicios Angular ubicados en `src/app/services/`.
+
+### Servicios Implementados
+
+- **ClientesService** (`clientes.service.ts`)
+  - `getClientes()` - Lista todos los clientes
+  - `getCliente(id)` - Detalle de cliente específico
+  - `crearCliente(cliente)` - Crear nuevo cliente
+  - `actualizarCliente(id, cliente)` - Actualizar cliente
+  - `eliminarCliente(id)` - Eliminar cliente
+
+- **ValorCuotaService** (`valor-cuota.service.ts`)
+  - `getValoresCuota()` - Lista valores de cuota
+  - `getValorCuota(id)` - Detalle de valor específico
+  - `getValoresPorFondo(fondoId)` - Valores por fondo
+  - `getUltimoValor()` - Último valor registrado
+
+### Configuración
+
+Los servicios usan `HttpClient` configurado en `app.config.ts`. Para conectar con tu backend:
+
+1. Actualiza la `apiUrl` en cada servicio con tu URL real
+2. Define interfaces TypeScript para los modelos de datos
+3. Implementa manejo de errores y loading states en componentes
+
+---
+
+## �📱 Características de Diseño
 
 ### Header
 
