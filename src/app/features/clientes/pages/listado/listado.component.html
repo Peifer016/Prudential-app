@@ -34,12 +34,15 @@
       >
         <i class="fa-solid fa-filter text-sm"></i>
         <span class="hidden md:inline text-sm font-medium"> Filtros de Búsqueda </span>
+        @if (filtros.estado || filtros.perfil || filtros.tratamiento) {
+          <span class="absolute -top-1 -right-1 w-3 h-3 bg-[#0070c0] rounded-full"></span>
+        }
       </button>
 
-      <!-- MODAL DESPLEGABLE DE FILTROS ACTUALIZADO -->
+      <!-- MODAL DESPLEGABLE DE FILTROS -->
       @if (mostrarFiltros) {
         <div
-          class="absolute right-0 top-14 z-50 w-[300px] bg-white border border-gray-100 rounded-2xl shadow-2xl p-6 animate-fade-in"
+          class="absolute right-0 top-14 z-50 w-[320px] bg-white border border-gray-100 rounded-2xl shadow-2xl p-6 animate-fade-in"
         >
           <div class="space-y-5">
             <!-- Período de creación -->
@@ -77,40 +80,23 @@
               </div>
             </div>
 
-            <!-- Fondo con suscripciones -->
+            <!-- Estado (Selección Única) -->
             <div>
-              <label class="block text-[14px] text-[#34445c] mb-2 font-medium"
-                >Fondo con suscripciones</label
-              >
-              <div class="relative">
-                <select
-                  class="w-full p-3 border border-gray-200 rounded-xl text-sm text-[#34445c] focus:outline-none focus:border-[#0070c0] appearance-none bg-white"
-                >
-                  <option value="" disabled selected>Selecciona un tipo de fondo</option>
-                  <option value="renta_variable">Fondo Renta Variable</option>
-                  <option value="renta_fija">Fondo Renta Fija</option>
-                  <option value="todos">Todos los fondos</option>
-                </select>
-                <i
-                  class="fa-solid fa-chevron-down absolute right-4 top-4 text-gray-300 text-[10px]"
-                ></i>
-              </div>
-            </div>
-
-            <!-- Serie -->
-            <div>
-              <label class="block text-[14px] text-[#34445c] mb-2 font-medium">Serie</label>
-              <div class="relative">
-                <select
-                  class="w-full p-3 border border-gray-200 rounded-xl text-sm text-[#34445c] focus:outline-none focus:border-[#0070c0] appearance-none bg-white"
-                >
-                  <option value="" disabled selected>Selecciona una serie</option>
-                  <option value="serie1">Serie 1</option>
-                  <option value="serie2">Serie 2</option>
-                </select>
-                <i
-                  class="fa-solid fa-chevron-down absolute right-4 top-4 text-gray-300 text-[10px]"
-                ></i>
+              <label class="block text-[14px] text-[#34445c] mb-2 font-medium">Estado</label>
+              <div class="space-y-3">
+                @for (opcion of ['Activo', 'Inactivo', 'Bloqueado']; track opcion) {
+                  <label
+                    class="flex items-center gap-3 text-[14px] text-[#34445c] cursor-pointer group"
+                  >
+                    <input
+                      type="checkbox"
+                      [checked]="filtros.estado === opcion"
+                      (change)="seleccionarUnico('estado', opcion)"
+                      class="w-5 h-5 rounded border-gray-200 text-[#0070c0] focus:ring-0 cursor-pointer"
+                    />
+                    <span class="group-hover:text-[#0070c0] transition-colors">{{ opcion }}</span>
+                  </label>
+                }
               </div>
             </div>
 
@@ -136,24 +122,14 @@
               </div>
             </div>
 
-            <!-- Estado (Selección Única) -->
-            <div>
-              <label class="block text-[14px] text-[#34445c] mb-2 font-medium">Estado</label>
-              <div class="space-y-3">
-                @for (opcion of ['Activo', 'Inactivo', 'Bloqueado']; track opcion) {
-                  <label
-                    class="flex items-center gap-3 text-[14px] text-[#34445c] cursor-pointer group"
-                  >
-                    <input
-                      type="checkbox"
-                      [checked]="filtros.estado === opcion"
-                      (change)="seleccionarUnico('estado', opcion)"
-                      class="w-5 h-5 rounded border-gray-200 text-[#0070c0] focus:ring-0 cursor-pointer"
-                    />
-                    <span class="group-hover:text-[#0070c0] transition-colors">{{ opcion }}</span>
-                  </label>
-                }
-              </div>
+            <!-- Botón Limpiar Filtros -->
+            <div class="pt-4 border-t border-gray-100 mt-2">
+              <button
+                (click)="limpiarFiltros()"
+                class="w-full py-2.5 text-sm font-medium text-gray-500 hover:text-[#0070c0] transition-colors"
+              >
+                Limpiar todos los filtros
+              </button>
             </div>
           </div>
         </div>
@@ -161,17 +137,30 @@
     </div>
   </div>
 
-  <!-- 3. MENSAJE DE RESULTADOS (Referencia: image_7dd94f.png) -->
-  @if (!cargando && busqueda.length > 0) {
-    <div class="flex justify-center py-2 animate-fade-in">
+  <!-- 3. MENSAJE DE RESULTADOS -->
+  @if (
+    !cargando && (busqueda.length > 0 || filtros.estado || filtros.perfil || filtros.tratamiento)
+  ) {
+    <div class="flex justify-between items-center py-2 animate-fade-in">
       <p class="text-[14px] text-[#0e1b3d]">
-        <span class="font-bold">{{ clientes.length }} resultados encontrados</span>
-        para los datos ingresados <span class="text-gray-500 italic">"{{ busqueda }}"</span>
+        <span class="font-bold">{{ clientesFiltrados.length }} resultados encontrados</span>
+        @if (busqueda) {
+          <span
+            >para los datos ingresados
+            <span class="text-gray-500 italic">"{{ busqueda }}"</span></span
+          >
+        }
       </p>
+      <button
+        (click)="limpiarFiltros()"
+        class="text-[11px] text-gray-400 hover:text-[#0070c0] transition-colors"
+      >
+        <i class="fa-solid fa-eraser mr-1"></i> Limpiar filtros
+      </button>
     </div>
   }
 
-  <!-- 4. TABLA CON OVERLAY DE CARGA (Referencia: image_7de4d4.png) -->
+  <!-- 4. TABLA CON OVERLAY DE CARGA -->
   <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden relative">
     <!-- Spinner y Blur de carga -->
     @if (cargando) {
@@ -180,10 +169,7 @@
       >
         <div class="flex flex-col items-center gap-4 text-center px-4">
           <i class="fa-solid fa-circle-notch fa-spin text-3xl text-[#0e1b3d]"></i>
-          <p class="text-[13px] font-medium text-[#0e1b3d]">
-            buscando coincidencias para los datos ingresados
-            <span class="font-bold">"{{ busqueda }}"</span>
-          </p>
+          <p class="text-[13px] font-medium text-[#0e1b3d]">Buscando coincidencias...</p>
         </div>
       </div>
     }
@@ -203,33 +189,51 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-100 text-[13px] text-gray-600 bg-white">
-          <tr
-            *ngFor="let c of clientes"
-            class="hover:bg-blue-50/40 cursor-pointer transition-all duration-200"
-          >
-            <td class="p-4 whitespace-nowrap">{{ c.fecha }}</td>
-            <td class="p-4">
-              <div class="flex items-center gap-2">
-                <span class="font-medium text-gray-800 whitespace-nowrap">{{ c.nombre }}</span>
-                <i class="fa-regular fa-copy text-gray-300 text-xs hover:text-[#0070c0]"></i>
-              </div>
-            </td>
-            <td class="p-4 whitespace-nowrap">{{ c.doc }}</td>
-            <td class="p-4 whitespace-nowrap">{{ c.cel }}</td>
-            <td class="p-4 whitespace-nowrap">{{ c.correo }}</td>
-            <td class="p-4">
-              <span [class]="'px-3 py-1 rounded text-[11px] font-bold ' + getEstadoStyle(c.estado)">
-                {{ c.estado }}
-              </span>
-            </td>
-            <td class="p-4 text-center">
-              <button
-                class="text-[#0070c0] font-bold flex items-center gap-1 mx-auto hover:underline"
-              >
-                Ver más <i class="fa-solid fa-chevron-right text-[10px]"></i>
-              </button>
-            </td>
-          </tr>
+          @for (c of clientesFiltrados; track c.doc) {
+            <tr class="hover:bg-blue-50/40 cursor-pointer transition-all duration-200">
+              <td class="p-4 whitespace-nowrap">{{ c.fecha }}</td>
+              <td class="p-4">
+                <div class="flex items-center gap-2">
+                  <span class="font-medium text-gray-800 whitespace-nowrap">{{ c.nombre }}</span>
+                  <i
+                    class="fa-regular fa-copy text-gray-300 text-xs hover:text-[#0070c0] cursor-pointer"
+                  ></i>
+                </div>
+              </td>
+              <td class="p-4 whitespace-nowrap">{{ c.doc }}</td>
+              <td class="p-4 whitespace-nowrap">{{ c.cel }}</td>
+              <td class="p-4 whitespace-nowrap">{{ c.correo }}</td>
+              <td class="p-4">
+                <span
+                  [class]="'px-3 py-1 rounded text-[11px] font-bold ' + getEstadoStyle(c.estado)"
+                >
+                  {{ c.estado }}
+                </span>
+              </td>
+              <td class="p-4 text-center">
+                <button
+                  (click)="irADetalle()"
+                  class="text-[#0070c0] font-bold flex items-center gap-1 mx-auto hover:underline"
+                >
+                  Ver más <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                </button>
+              </td>
+            </tr>
+          }
+          @if (clientesFiltrados.length === 0) {
+            <tr>
+              <td colspan="7" class="p-12 text-center text-gray-400">
+                <i class="fa-solid fa-search text-4xl mb-3 block"></i>
+                <p class="text-sm">No se encontraron resultados</p>
+                <button
+                  (click)="limpiarFiltros()"
+                  class="mt-3 text-[#0070c0] text-xs hover:underline"
+                >
+                  Limpiar filtros y buscar nuevamente
+                </button>
+              </td>
+            </tr>
+          }
         </tbody>
       </table>
     </div>
@@ -243,12 +247,12 @@
     </div>
   </div>
 
-  <!-- 5. PAGINACIÓN (Referencia: image_7e4e6e.png) -->
+  <!-- 5. PAGINACIÓN -->
   <div
     class="bg-white border border-gray-200 rounded-xl px-6 py-4 flex flex-col md:flex-row justify-between items-center shadow-sm"
   >
     <div class="text-[#4b5563] text-[13px] font-medium mb-4 md:mb-0">
-      Mostrando intervalo 1-10 de 100 clientes
+      Mostrando {{ clientesFiltrados.length }} de {{ clientesFiltrados.length }} clientes
     </div>
 
     <div class="flex items-center gap-1 text-gray-500 text-sm">

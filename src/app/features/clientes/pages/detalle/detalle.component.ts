@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-detalle',
-  imports: [],
   templateUrl: './detalle.component.html',
-  styleUrl: './detalle.component.css',
+  styleUrls: ['./detalle.component.css'],
 })
 export class DetalleComponent {
-  // Objeto para controlar qué secciones están visibles (todas abiertas por defecto)
   sections = {
     principales: true,
     personales: true,
@@ -15,8 +14,27 @@ export class DetalleComponent {
     conyuge: true,
   };
 
-  // Función para alternar el estado
-  toggleSection(section: keyof typeof this.sections) {
-    this.sections[section] = !this.sections[section];
+  constructor(private router: Router) {}
+
+  irADetalle() {
+    this.router.navigate(['/clientes/detalle']);
+  }
+
+  irAInversiones() {
+    this.router.navigate(['/clientes/inversiones']);
+  }
+
+  irAOperaciones() {
+    this.router.navigate(['/clientes/operaciones']);
+  }
+
+  cerrarMenu() {
+    // Aquí va tu lógica para cerrar el menú
+    console.log('Menú cerrado');
+  }
+
+  toggleSection(section: string) {
+    this.sections[section as keyof typeof this.sections] =
+      !this.sections[section as keyof typeof this.sections];
   }
 }

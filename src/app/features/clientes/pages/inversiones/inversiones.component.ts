@@ -2,16 +2,19 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
+import { Router, RouterModule } from '@angular/router';
 
 Chart.register(...registerables);
 
 @Component({
   selector: 'app-inversiones',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective],
+  imports: [CommonModule, BaseChartDirective, RouterModule],
   templateUrl: './inversiones.component.html',
 })
 export class InversionesComponent implements OnInit, AfterViewInit {
+  constructor(private router: Router) {}
+
   loading: boolean = true;
 
   totalDolarizado: number = 2281539.03;
@@ -184,5 +187,23 @@ export class InversionesComponent implements OnInit, AfterViewInit {
 
   guardarImagen(id: string): void {
     console.log('Guardando:', id);
+  }
+
+  irADetalle() {
+    this.router.navigate(['/clientes/detalle']);
+  }
+
+  irAInversiones() {
+    this.router.navigate(['/clientes/inversiones']);
+  }
+
+  irAOperaciones() {
+    this.router.navigate(['/clientes/operaciones']);
+  }
+
+  cerrarMenu() {
+    // Lógica para cerrar el menú
+    // Si tienes un menú lateral o móvil, puedes emitir un evento o cambiar una variable
+    console.log('Menú cerrado desde InversionesComponent');
   }
 }

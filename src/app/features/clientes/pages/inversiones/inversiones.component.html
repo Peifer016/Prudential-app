@@ -10,13 +10,26 @@
       <h1 class="text-3xl font-bold tracking-tight">Portafolio</h1>
     </div>
     <div class="flex flex-wrap gap-4 md:gap-8 text-[11px] font-bold uppercase tracking-wider">
-      <button class="text-gray-400 hover:text-[#0070c0] transition-colors pb-2">
-        Información Personal
+      <button
+        (click)="irADetalle(); cerrarMenu()"
+        class="flex items-center gap-2 text-gray-400 hover:text-[#0070c0] transition-colors pb-2"
+      >
+        <i class="fa-solid fa-user-gear"></i> Información Personal
       </button>
-      <button class="text-[#0070c0] border-b-2 border-[#0070c0] pb-2 flex items-center gap-2">
+
+      <button
+        (click)="irAInversiones(); cerrarMenu()"
+        class="flex items-center gap-2 text-[#0070c0] border-b-2 border-[#0070c0] pb-2"
+      >
         <i class="fa-solid fa-chart-line"></i> Dashboard de Inversión
       </button>
-      <button class="text-gray-400 hover:text-[#0070c0] transition-colors pb-2">Operaciones</button>
+
+      <button
+        (click)="irAOperaciones(); cerrarMenu()"
+        class="flex items-center gap-2 text-gray-400 hover:text-[#0070c0] transition-colors pb-2"
+      >
+        <i class="fa-solid fa-desktop"></i> Operaciones
+      </button>
     </div>
   </div>
 
