@@ -1,246 +1,273 @@
 <div class="p-0 md:p-8 space-y-6 bg-[#f8f9fa] min-h-screen font-sans">
-  <div
-    class="bg-[#ebedef] p-6 md:rounded-xl border-b md:border border-gray-200/60 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6"
-  >
-    <div>
-      <p class="text-[9px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-1">
-        Módulo de Clientes
-      </p>
-      <h1 class="text-3xl font-bold text-[#0e1b3d] tracking-tight">Detalle</h1>
+  <!-- Loading State -->
+  @if (loading) {
+    <div class="flex justify-center items-center h-64">
+      <div class="text-center">
+        <i class="fa-solid fa-spinner fa-spin text-4xl text-[#0070c0] mb-4"></i>
+        <p class="text-gray-500">Cargando información del cliente...</p>
+      </div>
     </div>
+  }
 
-    <div class="flex flex-wrap gap-4 md:gap-8 text-[11px] font-bold uppercase tracking-wider">
-      <button
-        (click)="irADetalle(); cerrarMenu()"
-        class="flex items-center gap-2 text-[#0070c0] border-b-2 border-[#0070c0] pb-2"
+  <!-- Error State -->
+  @if (error && !loading) {
+    <div class="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+      <i class="fa-solid fa-circle-exclamation text-red-500 text-4xl mb-3"></i>
+      <p class="text-red-600">{{ error }}</p>
+      <button 
+        (click)="cargarCliente('01', '10265992')" 
+        class="mt-4 px-4 py-2 bg-[#0070c0] text-white rounded-lg text-sm"
       >
-        <i class="fa-solid fa-user-gear"></i> Información Personal
-      </button>
-
-      <button
-        (click)="irAInversiones(); cerrarMenu()"
-        class="flex items-center gap-2 text-gray-400 hover:text-[#0070c0] transition-colors pb-2"
-      >
-        <i class="fa-solid fa-chart-line"></i> Dashboard de Inversión
-      </button>
-      
-      <button
-        (click)="irAOperaciones(); cerrarMenu()"
-        class="flex items-center gap-2 text-gray-400 hover:text-[#0070c0] transition-colors pb-2"
-      >
-        <i class="fa-solid fa-desktop"></i> Operaciones
+        Reintentar
       </button>
     </div>
-  </div>
+  }
 
-  <div
-    class="bg-white md:rounded-xl shadow-sm border border-gray-100 overflow-hidden mx-auto max-w-[1400px]"
-  >
-    <div class="border-b border-gray-100">
-      <div
-        (click)="toggleSection('principales')"
-        class="bg-[#0070c0] text-white px-6 py-3 flex justify-between items-center cursor-pointer hover:bg-[#0062a8] transition-all"
-      >
-        <h2 class="text-[13px] font-semibold tracking-wide uppercase">Datos principales</h2>
-        <i
-          class="fa-solid fa-chevron-up text-[10px] transition-transform duration-300"
-          [class.rotate-180]="!sections.principales"
-        ></i>
+  <!-- Content - Mostrar solo si hay cliente y no hay error -->
+  @if (cliente && !loading && !error) {
+    <div
+      class="bg-[#ebedef] p-6 md:rounded-xl border-b md:border border-gray-200/60 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6"
+    >
+      <div>
+        <p class="text-[9px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-1">
+          Módulo de Clientes
+        </p>
+        <h1 class="text-3xl font-bold text-[#0e1b3d] tracking-tight">Detalle</h1>
       </div>
 
-      @if (sections.principales) {
-        <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-20 animate-fade-in">
-          <div class="flex flex-col gap-1">
-            <span class="text-[11px] text-gray-400 font-medium">Nombre Completo:</span>
-            <span class="text-[13px] font-bold text-gray-800">Luis Alberto Ramírez Torres</span>
-          </div>
-          <div class="flex flex-col gap-1">
-            <span class="text-[11px] text-gray-400 font-medium"
-              >Perfil de tolerancia al riesgo:</span
-            >
-            <span class="text-[13px] font-bold text-gray-800">Moderado</span>
-          </div>
-          <div class="flex flex-col gap-1">
-            <span class="text-[11px] text-gray-400 font-medium">Tipo de Documento:</span>
-            <span class="text-[13px] font-bold text-gray-800">DNI</span>
-          </div>
-          <div class="flex flex-col gap-1">
-            <span class="text-[11px] text-gray-400 font-medium">Nro de Documento:</span>
-            <span class="text-[13px] font-bold text-gray-800">45896321</span>
-          </div>
-        </div>
-      }
+      <div class="flex flex-wrap gap-4 md:gap-8 text-[11px] font-bold uppercase tracking-wider">
+        <button
+          (click)="irADetalle(); cerrarMenu()"
+          class="flex items-center gap-2 text-[#0070c0] border-b-2 border-[#0070c0] pb-2"
+        >
+          <i class="fa-solid fa-user-gear"></i> Información Personal
+        </button>
+
+        <button
+          (click)="irAInversiones(); cerrarMenu()"
+          class="flex items-center gap-2 text-gray-400 hover:text-[#0070c0] transition-colors pb-2"
+        >
+          <i class="fa-solid fa-chart-line"></i> Dashboard de Inversión
+        </button>
+        
+        <button
+          (click)="irAOperaciones(); cerrarMenu()"
+          class="flex items-center gap-2 text-gray-400 hover:text-[#0070c0] transition-colors pb-2"
+        >
+          <i class="fa-solid fa-desktop"></i> Operaciones
+        </button>
+      </div>
     </div>
 
-    <div class="border-b border-gray-100">
-      <div
-        (click)="toggleSection('personales')"
-        class="bg-[#0070c0] text-white px-6 py-3 flex justify-between items-center cursor-pointer hover:bg-[#0062a8] transition-all"
-      >
-        <h2 class="text-[13px] font-semibold tracking-wide uppercase">Datos personales</h2>
-        <i
-          class="fa-solid fa-chevron-up text-[10px] transition-transform duration-300"
-          [class.rotate-180]="!sections.personales"
-        ></i>
-      </div>
-
-      @if (sections.personales) {
-        <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-24 animate-fade-in">
-          <div class="space-y-4">
-            <div class="flex justify-between items-end border-b border-gray-50 pb-1">
-              <span class="text-[11px] text-gray-400 font-medium">Nro de Teléfono:</span>
-              <span class="text-[12px] font-bold text-gray-800">912345678</span>
-            </div>
-            <div class="flex justify-between items-end border-b border-gray-50 pb-1">
-              <span class="text-[11px] text-gray-400 font-medium">Estado Civil:</span>
-              <span class="text-[12px] font-bold text-gray-800">Unión de hecho</span>
-            </div>
-            <div class="flex justify-between items-end border-b border-gray-50 pb-1">
-              <span class="text-[11px] text-gray-400 font-medium">Lugar de Nacimiento:</span>
-              <span class="text-[12px] font-bold text-gray-800">Arequipa</span>
-            </div>
-            <div class="flex justify-between items-end border-b border-gray-50 pb-1">
-              <span class="text-[11px] text-gray-400 font-medium">Grado de Instrucción:</span>
-              <span class="text-[12px] font-bold text-gray-800">Técnico</span>
-            </div>
-            <div class="flex justify-between items-end border-b border-gray-50 pb-1">
-              <span class="text-[11px] text-gray-400 font-medium">Ocupación:</span>
-              <span class="text-[12px] font-bold text-gray-800">Técnico electricista</span>
-            </div>
-            <div class="flex justify-between items-end border-b border-gray-50 pb-1">
-              <span class="text-[11px] text-gray-400 font-medium">Puesto:</span>
-              <span class="text-[12px] font-bold text-gray-800">Gerente General</span>
-            </div>
-            <div class="flex justify-between items-end border-b border-gray-50 pb-1">
-              <span class="text-[11px] text-gray-400 font-medium">Departamento:</span>
-              <span class="text-[12px] font-bold text-gray-800">Arequipa</span>
-            </div>
-          </div>
-
-          <div class="space-y-4">
-            <div class="flex justify-between items-end border-b border-gray-50 pb-1">
-              <span class="text-[11px] text-gray-400 font-medium">Sexo:</span>
-              <span class="text-[12px] font-bold text-gray-800">Masculino</span>
-            </div>
-            <div class="flex justify-between items-end border-b border-gray-50 pb-1">
-              <span class="text-[11px] text-gray-400 font-medium">Fecha de nacimiento:</span>
-              <span class="text-[12px] font-bold text-gray-800">15/07/1988</span>
-            </div>
-            <div class="flex justify-between items-end border-b border-gray-50 pb-1">
-              <span class="text-[11px] text-gray-400 font-medium">Nacionalidad:</span>
-              <span class="text-[12px] font-bold text-gray-800">Peruana</span>
-            </div>
-            <div class="flex justify-between items-end border-b border-gray-50 pb-1">
-              <span class="text-[11px] text-gray-400 font-medium">Tipo de Trabajo:</span>
-              <span class="text-[12px] font-bold text-gray-800">Independiente</span>
-            </div>
-            <div class="flex justify-between items-end border-b border-gray-50 pb-1">
-              <span class="text-[11px] text-gray-400 font-medium">Razón Social:</span>
-              <span class="text-[12px] font-bold text-gray-800"
-                >Servicios Eléctricos Ramírez EIRL</span
-              >
-            </div>
-            <div class="flex justify-between items-end border-b border-gray-50 pb-1">
-              <span class="text-[11px] text-gray-400 font-medium">Antigüedad:</span>
-              <span class="text-[12px] font-bold text-gray-800">8 años</span>
-            </div>
-            <div class="flex justify-between items-end border-b border-gray-50 pb-1">
-              <span class="text-[11px] text-gray-400 font-medium">Provincia:</span>
-              <span class="text-[12px] font-bold text-gray-800">Arequipa</span>
-            </div>
-          </div>
+    <div
+      class="bg-white md:rounded-xl shadow-sm border border-gray-100 overflow-hidden mx-auto max-w-[1400px]"
+    >
+      <!-- Datos principales - Ahora con datos de la API -->
+      <div class="border-b border-gray-100">
+        <div
+          (click)="toggleSection('principales')"
+          class="bg-[#0070c0] text-white px-6 py-3 flex justify-between items-center cursor-pointer hover:bg-[#0062a8] transition-all"
+        >
+          <h2 class="text-[13px] font-semibold tracking-wide uppercase">Datos principales</h2>
+          <i
+            class="fa-solid fa-chevron-up text-[10px] transition-transform duration-300"
+            [class.rotate-180]="!sections.principales"
+          ></i>
         </div>
-      }
-    </div>
 
-    <div class="border-b border-gray-100">
-      <div
-        (click)="toggleSection('contratos')"
-        class="bg-[#0070c0] text-white px-6 py-3 flex justify-between items-center cursor-pointer hover:bg-[#0062a8] transition-all"
-      >
-        <h2 class="text-[13px] font-semibold tracking-wide uppercase">Contratos</h2>
-        <i
-          class="fa-solid fa-chevron-up text-[10px] transition-transform duration-300"
-          [class.rotate-180]="!sections.contratos"
-        ></i>
-      </div>
-
-      @if (sections.contratos) {
-        <div class="overflow-x-auto animate-fade-in">
-          <table class="w-full text-left text-[11px]">
-            <thead
-              class="bg-[#f8f9fa] text-gray-400 font-bold uppercase tracking-tighter border-b border-gray-100"
-            >
-              <tr>
-                <th class="px-8 py-4">Fecha de Creación</th>
-                <th class="px-8 py-4">Tipo de Contrato</th>
-                <th class="px-8 py-4">Nro de Contrato</th>
-                <th class="px-8 py-4">Participantes</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-              <tr class="text-gray-600 hover:bg-gray-50 transition-colors">
-                <td class="px-8 py-5">10/11/2023</td>
-                <td class="px-8 py-5 italic text-gray-400">Individual</td>
-                <td class="px-8 py-5 font-bold">589741</td>
-                <td class="px-8 py-5">Luis Ramírez y Dana Estrada</td>
-              </tr>
-              <tr class="text-gray-600 hover:bg-gray-50 transition-colors">
-                <td class="px-8 py-5">10/11/2024</td>
-                <td class="px-8 py-5 italic text-gray-400">Mancomunado</td>
-                <td class="px-8 py-5 font-bold">589742</td>
-                <td class="px-8 py-5">Luis Ramírez y Dana Estrada 2</td>
-              </tr>
-              <tr class="text-gray-600 hover:bg-gray-50 transition-colors">
-                <td class="px-8 py-5">10/11/2025</td>
-                <td class="px-8 py-5 italic text-gray-400">Individual</td>
-                <td class="px-8 py-5 font-bold">589743</td>
-                <td class="px-8 py-5">Luis Ramírez y Dana Estrada 3</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      }
-    </div>
-
-    <div>
-      <div
-        (click)="toggleSection('conyuge')"
-        class="bg-[#0070c0] text-white px-6 py-3 flex justify-between items-center cursor-pointer hover:bg-[#0062a8] transition-all"
-      >
-        <h2 class="text-[13px] font-semibold tracking-wide uppercase">Datos del cónyuge</h2>
-        <i
-          class="fa-solid fa-chevron-up text-[10px] transition-transform duration-300"
-          [class.rotate-180]="!sections.conyuge"
-        ></i>
-      </div>
-
-      @if (sections.conyuge) {
-        <div class="p-8 animate-fade-in">
-          <div class="flex flex-col gap-1 mb-8">
-            <span class="text-[11px] text-gray-400 font-medium">Nombre Completo:</span>
-            <span class="text-[13px] font-bold text-gray-800">Dana Cristina Estrada Fernández</span>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-24">
-            <div class="flex justify-between items-end border-b border-gray-50 pb-1">
-              <span class="text-[11px] text-gray-400 font-medium">Régimen:</span>
-              <span class="text-[12px] font-bold text-gray-800">Sociedad de Gananciales</span>
+        @if (sections.principales) {
+          <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-20 animate-fade-in">
+            <div class="flex flex-col gap-1">
+              <span class="text-[11px] text-gray-400 font-medium">Nombre Completo:</span>
+              <span class="text-[13px] font-bold text-gray-800">{{ cliente.NombreCompleto }}</span>
             </div>
-            <div class="flex justify-between items-end border-b border-gray-50 pb-1">
-              <span class="text-[11px] text-gray-400 font-medium">Nacionalidad:</span>
-              <span class="text-[12px] font-bold text-gray-800">Peruana</span>
+            <!-- Perfil de tolerancia al riesgo - No viene de API, se queda como está -->
+            <div class="flex flex-col gap-1">
+              <span class="text-[11px] text-gray-400 font-medium">Perfil de tolerancia al riesgo:</span>
+              <span class="text-[13px] font-bold text-gray-800">Moderado</span>
             </div>
-            <div class="flex justify-between items-end border-b border-gray-50 pb-1">
+            <div class="flex flex-col gap-1">
               <span class="text-[11px] text-gray-400 font-medium">Tipo de Documento:</span>
-              <span class="text-[12px] font-bold text-gray-800">DNI</span>
+              <span class="text-[13px] font-bold text-gray-800">
+                {{ cliente.TipoDocumento === '01' ? 'DNI' : 'RUC' }}
+              </span>
             </div>
-            <div class="flex justify-between items-end border-b border-gray-50 pb-1">
+            <div class="flex flex-col gap-1">
               <span class="text-[11px] text-gray-400 font-medium">Nro de Documento:</span>
-              <span class="text-[12px] font-bold text-gray-800">46781239</span>
+              <span class="text-[13px] font-bold text-gray-800">{{ cliente.NumeroDocumento }}</span>
             </div>
           </div>
+        }
+      </div>
+
+      <!-- Datos personales - Mezcla datos de API y datos fijos -->
+      <div class="border-b border-gray-100">
+        <div
+          (click)="toggleSection('personales')"
+          class="bg-[#0070c0] text-white px-6 py-3 flex justify-between items-center cursor-pointer hover:bg-[#0062a8] transition-all"
+        >
+          <h2 class="text-[13px] font-semibold tracking-wide uppercase">Datos personales</h2>
+          <i
+            class="fa-solid fa-chevron-up text-[10px] transition-transform duration-300"
+            [class.rotate-180]="!sections.personales"
+          ></i>
         </div>
-      }
+
+        @if (sections.personales) {
+          <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-24 animate-fade-in">
+            <div class="space-y-4">
+              <!-- Teléfono - Viene de API -->
+              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
+                <span class="text-[11px] text-gray-400 font-medium">Nro de Teléfono:</span>
+                <span class="text-[12px] font-bold text-gray-800">{{ cliente.Telefono || 'No registrado' }}</span>
+              </div>
+              <!-- Correo - Viene de API (aunque no estaba en el HTML original, lo agrego) -->
+              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
+                <span class="text-[11px] text-gray-400 font-medium">Correo Electrónico:</span>
+                <span class="text-[12px] font-bold text-gray-800">{{ cliente.Correo || 'No registrado' }}</span>
+              </div>
+              <!-- Los siguientes campos NO vienen de la API, se mantienen como estaban -->
+              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
+                <span class="text-[11px] text-gray-400 font-medium">Estado Civil:</span>
+                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.estadoCivil }}</span>
+              </div>
+              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
+                <span class="text-[11px] text-gray-400 font-medium">Lugar de Nacimiento:</span>
+                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.lugarNacimiento }}</span>
+              </div>
+              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
+                <span class="text-[11px] text-gray-400 font-medium">Grado de Instrucción:</span>
+                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.gradoInstruccion }}</span>
+              </div>
+              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
+                <span class="text-[11px] text-gray-400 font-medium">Ocupación:</span>
+                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.ocupacion }}</span>
+              </div>
+              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
+                <span class="text-[11px] text-gray-400 font-medium">Puesto:</span>
+                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.puesto }}</span>
+              </div>
+              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
+                <span class="text-[11px] text-gray-400 font-medium">Departamento:</span>
+                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.departamento }}</span>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
+                <span class="text-[11px] text-gray-400 font-medium">Sexo:</span>
+                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.sexo }}</span>
+              </div>
+              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
+                <span class="text-[11px] text-gray-400 font-medium">Fecha de nacimiento:</span>
+                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.fechaNacimiento || 'No registrada' }}</span>
+              </div>
+              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
+                <span class="text-[11px] text-gray-400 font-medium">Nacionalidad:</span>
+                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.nacionalidad }}</span>
+              </div>
+              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
+                <span class="text-[11px] text-gray-400 font-medium">Tipo de Trabajo:</span>
+                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.tipoTrabajo }}</span>
+              </div>
+              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
+                <span class="text-[11px] text-gray-400 font-medium">Razón Social:</span>
+                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.razonSocial }}</span>
+              </div>
+              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
+                <span class="text-[11px] text-gray-400 font-medium">Antigüedad:</span>
+                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.antiguedad }}</span>
+              </div>
+              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
+                <span class="text-[11px] text-gray-400 font-medium">Provincia:</span>
+                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.provincia }}</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Contratos - Datos de ejemplo (no vienen de API) -->
+      <div class="border-b border-gray-100">
+        <div
+          (click)="toggleSection('contratos')"
+          class="bg-[#0070c0] text-white px-6 py-3 flex justify-between items-center cursor-pointer hover:bg-[#0062a8] transition-all"
+        >
+          <h2 class="text-[13px] font-semibold tracking-wide uppercase">Contratos</h2>
+          <i
+            class="fa-solid fa-chevron-up text-[10px] transition-transform duration-300"
+            [class.rotate-180]="!sections.contratos"
+          ></i>
+        </div>
+
+        @if (sections.contratos) {
+          <div class="overflow-x-auto animate-fade-in">
+            <table class="w-full text-left text-[11px]">
+              <thead
+                class="bg-[#f8f9fa] text-gray-400 font-bold uppercase tracking-tighter border-b border-gray-100"
+              >
+                <tr>
+                  <th class="px-8 py-4">Fecha de Creación</th>
+                  <th class="px-8 py-4">Tipo de Contrato</th>
+                  <th class="px-8 py-4">Nro de Contrato</th>
+                  <th class="px-8 py-4">Participantes</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+                @for (contrato of contratos; track contrato.numeroContrato) {
+                  <tr class="text-gray-600 hover:bg-gray-50 transition-colors">
+                    <td class="px-8 py-5">{{ contrato.fechaCreacion }}</td>
+                    <td class="px-8 py-5 italic text-gray-400">{{ contrato.tipoContrato }}</td>
+                    <td class="px-8 py-5 font-bold">{{ contrato.numeroContrato }}</td>
+                    <td class="px-8 py-5">{{ contrato.participantes }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+
+      <!-- Datos del cónyuge - Datos de ejemplo (no vienen de API) -->
+      <div>
+        <div
+          (click)="toggleSection('conyuge')"
+          class="bg-[#0070c0] text-white px-6 py-3 flex justify-between items-center cursor-pointer hover:bg-[#0062a8] transition-all"
+        >
+          <h2 class="text-[13px] font-semibold tracking-wide uppercase">Datos del cónyuge</h2>
+          <i
+            class="fa-solid fa-chevron-up text-[10px] transition-transform duration-300"
+            [class.rotate-180]="!sections.conyuge"
+          ></i>
+        </div>
+
+        @if (sections.conyuge) {
+          <div class="p-8 animate-fade-in">
+            <div class="flex flex-col gap-1 mb-8">
+              <span class="text-[11px] text-gray-400 font-medium">Nombre Completo:</span>
+              <span class="text-[13px] font-bold text-gray-800">{{ datosConyuge.nombreCompleto }}</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-24">
+              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
+                <span class="text-[11px] text-gray-400 font-medium">Régimen:</span>
+                <span class="text-[12px] font-bold text-gray-800">{{ datosConyuge.regimen }}</span>
+              </div>
+              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
+                <span class="text-[11px] text-gray-400 font-medium">Nacionalidad:</span>
+                <span class="text-[12px] font-bold text-gray-800">{{ datosConyuge.nacionalidad }}</span>
+              </div>
+              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
+                <span class="text-[11px] text-gray-400 font-medium">Tipo de Documento:</span>
+                <span class="text-[12px] font-bold text-gray-800">{{ datosConyuge.tipoDocumento }}</span>
+              </div>
+              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
+                <span class="text-[11px] text-gray-400 font-medium">Nro de Documento:</span>
+                <span class="text-[12px] font-bold text-gray-800">{{ datosConyuge.numeroDocumento }}</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
     </div>
-  </div>
+  }
 </div>

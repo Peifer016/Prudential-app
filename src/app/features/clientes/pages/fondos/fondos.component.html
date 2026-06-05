@@ -22,21 +22,35 @@
 
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
     @for (fondo of fondos; track fondo.nombre) {
-      <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow cursor-pointer">
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow flex flex-col">
         <div class="h-1.5 w-full" [ngClass]="fondo.colorClase"></div>
         
-        <div class="p-6 space-y-4">
+        <div class="p-6 flex-1">
           <h2 class="text-2xl font-bold text-[#0070c0]">{{ fondo.nombre }}</h2>
           
-          <div class="space-y-1">
+          <div class="space-y-1 mt-4">
             <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Perfil de tolerancia</p>
             <p class="text-sm font-bold text-[#0e1b3d]">{{ fondo.perfil }}</p>
           </div>
 
-          <div class="space-y-1">
+          <div class="space-y-1 mt-4">
             <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Estado</p>
             <p class="text-sm font-bold text-[#0e1b3d]">{{ fondo.estado }}</p>
           </div>
+        </div>
+
+        <!-- Botón inferior derecha con routerLink y queryParams -->
+        <div class="p-6 pt-0 flex justify-end">
+          <a 
+            [routerLink]="['/valor-cuota']"
+            [queryParams]="{
+              codFondo: fondo.codFondo,
+              codAdministradora: fondo.codAdministradora,
+              codFondoSerie: fondo.codFondoSerie
+            }"
+            class="bg-[#0070c0] hover:bg-[#005a9e] text-white text-sm font-semibold py-2 px-4 rounded-lg transition-colors shadow-sm inline-block text-center cursor-pointer">
+            Ver valor cuota
+          </a>
         </div>
       </div>
     }
