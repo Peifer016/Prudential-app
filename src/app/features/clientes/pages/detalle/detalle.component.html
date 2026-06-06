@@ -14,12 +14,6 @@
     <div class="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
       <i class="fa-solid fa-circle-exclamation text-red-500 text-4xl mb-3"></i>
       <p class="text-red-600">{{ error }}</p>
-      <button 
-        (click)="cargarCliente('01', '10265992')" 
-        class="mt-4 px-4 py-2 bg-[#0070c0] text-white rounded-lg text-sm"
-      >
-        Reintentar
-      </button>
     </div>
   }
 
@@ -37,7 +31,7 @@
 
       <div class="flex flex-wrap gap-4 md:gap-8 text-[11px] font-bold uppercase tracking-wider">
         <button
-          (click)="irADetalle(); cerrarMenu()"
+          (click)="detalleCliente(cliente.TipoDocumento, cliente.NumeroDocumento); cerrarMenu()"
           class="flex items-center gap-2 text-[#0070c0] border-b-2 border-[#0070c0] pb-2"
         >
           <i class="fa-solid fa-user-gear"></i> Información Personal
@@ -49,7 +43,7 @@
         >
           <i class="fa-solid fa-chart-line"></i> Dashboard de Inversión
         </button>
-        
+
         <button
           (click)="irAOperaciones(); cerrarMenu()"
           class="flex items-center gap-2 text-gray-400 hover:text-[#0070c0] transition-colors pb-2"
@@ -62,7 +56,7 @@
     <div
       class="bg-white md:rounded-xl shadow-sm border border-gray-100 overflow-hidden mx-auto max-w-[1400px]"
     >
-      <!-- Datos principales - Ahora con datos de la API -->
+      <!-- Datos principales -->
       <div class="border-b border-gray-100">
         <div
           (click)="toggleSection('principales')"
@@ -79,28 +73,33 @@
           <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-20 animate-fade-in">
             <div class="flex flex-col gap-1">
               <span class="text-[11px] text-gray-400 font-medium">Nombre Completo:</span>
-              <span class="text-[13px] font-bold text-gray-800">{{ cliente.NombreCompleto }}</span>
+              <span class="text-[13px] font-bold text-gray-800">{{
+                cliente.NombreCompleto || ''
+              }}</span>
             </div>
-            <!-- Perfil de tolerancia al riesgo - No viene de API, se queda como está -->
             <div class="flex flex-col gap-1">
-              <span class="text-[11px] text-gray-400 font-medium">Perfil de tolerancia al riesgo:</span>
-              <span class="text-[13px] font-bold text-gray-800">Moderado</span>
+              <span class="text-[11px] text-gray-400 font-medium"
+                >Perfil de tolerancia al riesgo:</span
+              >
+              <span class="text-[13px] font-bold text-gray-800">{{ perfilRiesgo || '' }}</span>
             </div>
             <div class="flex flex-col gap-1">
               <span class="text-[11px] text-gray-400 font-medium">Tipo de Documento:</span>
               <span class="text-[13px] font-bold text-gray-800">
-                {{ cliente.TipoDocumento === '01' ? 'DNI' : 'RUC' }}
+                {{ getTipoDocumentoTexto(cliente.TipoDocumento) || '' }}
               </span>
             </div>
             <div class="flex flex-col gap-1">
               <span class="text-[11px] text-gray-400 font-medium">Nro de Documento:</span>
-              <span class="text-[13px] font-bold text-gray-800">{{ cliente.NumeroDocumento }}</span>
+              <span class="text-[13px] font-bold text-gray-800">{{
+                cliente.NumeroDocumento || ''
+              }}</span>
             </div>
           </div>
         }
       </div>
 
-      <!-- Datos personales - Mezcla datos de API y datos fijos -->
+      <!-- Datos personales -->
       <div class="border-b border-gray-100">
         <div
           (click)="toggleSection('personales')"
@@ -116,78 +115,107 @@
         @if (sections.personales) {
           <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-24 animate-fade-in">
             <div class="space-y-4">
-              <!-- Teléfono - Viene de API -->
               <div class="flex justify-between items-end border-b border-gray-50 pb-1">
                 <span class="text-[11px] text-gray-400 font-medium">Nro de Teléfono:</span>
-                <span class="text-[12px] font-bold text-gray-800">{{ cliente.Telefono || 'No registrado' }}</span>
+                <span class="text-[12px] font-bold text-gray-800">{{
+                  cliente.Telefono || ''
+                }}</span>
               </div>
-              <!-- Correo - Viene de API (aunque no estaba en el HTML original, lo agrego) -->
               <div class="flex justify-between items-end border-b border-gray-50 pb-1">
                 <span class="text-[11px] text-gray-400 font-medium">Correo Electrónico:</span>
-                <span class="text-[12px] font-bold text-gray-800">{{ cliente.Correo || 'No registrado' }}</span>
+                <span class="text-[12px] font-bold text-gray-800">{{ cliente.Correo || '' }}</span>
               </div>
-              <!-- Los siguientes campos NO vienen de la API, se mantienen como estaban -->
               <div class="flex justify-between items-end border-b border-gray-50 pb-1">
                 <span class="text-[11px] text-gray-400 font-medium">Estado Civil:</span>
-                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.estadoCivil }}</span>
+                <span class="text-[12px] font-bold text-gray-800">{{
+                  getEstadoCivilTexto(cliente.EstadoCivil) || ''
+                }}</span>
               </div>
               <div class="flex justify-between items-end border-b border-gray-50 pb-1">
                 <span class="text-[11px] text-gray-400 font-medium">Lugar de Nacimiento:</span>
-                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.lugarNacimiento }}</span>
+                <span class="text-[12px] font-bold text-gray-800">{{
+                  cliente.LugarNacimiento || ''
+                }}</span>
               </div>
               <div class="flex justify-between items-end border-b border-gray-50 pb-1">
                 <span class="text-[11px] text-gray-400 font-medium">Grado de Instrucción:</span>
-                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.gradoInstruccion }}</span>
+                <span class="text-[12px] font-bold text-gray-800">{{
+                  cliente.GradoInstruccion || ''
+                }}</span>
               </div>
               <div class="flex justify-between items-end border-b border-gray-50 pb-1">
                 <span class="text-[11px] text-gray-400 font-medium">Ocupación:</span>
-                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.ocupacion }}</span>
+                <span class="text-[12px] font-bold text-gray-800">{{
+                  cliente.Ocupacion || ''
+                }}</span>
               </div>
               <div class="flex justify-between items-end border-b border-gray-50 pb-1">
                 <span class="text-[11px] text-gray-400 font-medium">Puesto:</span>
-                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.puesto }}</span>
+                <span class="text-[12px] font-bold text-gray-800">{{ cliente.Puesto || '' }}</span>
               </div>
               <div class="flex justify-between items-end border-b border-gray-50 pb-1">
                 <span class="text-[11px] text-gray-400 font-medium">Departamento:</span>
-                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.departamento }}</span>
+                <span class="text-[12px] font-bold text-gray-800">{{
+                  cliente.Departamento || ''
+                }}</span>
               </div>
             </div>
 
             <div class="space-y-4">
               <div class="flex justify-between items-end border-b border-gray-50 pb-1">
                 <span class="text-[11px] text-gray-400 font-medium">Sexo:</span>
-                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.sexo }}</span>
+                <span class="text-[12px] font-bold text-gray-800">{{
+                  getSexoTexto(cliente.Sexo) || ''
+                }}</span>
               </div>
               <div class="flex justify-between items-end border-b border-gray-50 pb-1">
                 <span class="text-[11px] text-gray-400 font-medium">Fecha de nacimiento:</span>
-                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.fechaNacimiento || 'No registrada' }}</span>
+                <span class="text-[12px] font-bold text-gray-800">{{
+                  (cliente.FechaNacimiento | date: 'dd/MM/yyyy') || ''
+                }}</span>
               </div>
               <div class="flex justify-between items-end border-b border-gray-50 pb-1">
                 <span class="text-[11px] text-gray-400 font-medium">Nacionalidad:</span>
-                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.nacionalidad }}</span>
+                <span class="text-[12px] font-bold text-gray-800">{{
+                  cliente.Nacionalidad || ''
+                }}</span>
               </div>
               <div class="flex justify-between items-end border-b border-gray-50 pb-1">
                 <span class="text-[11px] text-gray-400 font-medium">Tipo de Trabajo:</span>
-                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.tipoTrabajo }}</span>
+                <span class="text-[12px] font-bold text-gray-800">{{
+                  cliente.TipoTrabajo || ''
+                }}</span>
               </div>
               <div class="flex justify-between items-end border-b border-gray-50 pb-1">
                 <span class="text-[11px] text-gray-400 font-medium">Razón Social:</span>
-                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.razonSocial }}</span>
+                <span class="text-[12px] font-bold text-gray-800">{{
+                  cliente.RazonSocial || ''
+                }}</span>
               </div>
               <div class="flex justify-between items-end border-b border-gray-50 pb-1">
                 <span class="text-[11px] text-gray-400 font-medium">Antigüedad:</span>
-                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.antiguedad }}</span>
+                <span class="text-[12px] font-bold text-gray-800">{{
+                  cliente.Antiguedad || ''
+                }}</span>
               </div>
               <div class="flex justify-between items-end border-b border-gray-50 pb-1">
                 <span class="text-[11px] text-gray-400 font-medium">Provincia:</span>
-                <span class="text-[12px] font-bold text-gray-800">{{ datosPersonales.provincia }}</span>
+                <span class="text-[12px] font-bold text-gray-800">{{
+                  cliente.Provincia || ''
+                }}</span>
+              </div>
+              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
+                <span class="text-[11px] text-gray-400 font-medium">Dirección:</span>
+                <span class="text-[12px] font-bold text-gray-800">{{
+                  cliente.Direccion || ''
+                }}</span>
               </div>
             </div>
           </div>
         }
       </div>
 
-      <!-- Contratos - Datos de ejemplo (no vienen de API) -->
+      <!-- Contratos - Vacío por ahora -->
       <div class="border-b border-gray-100">
         <div
           (click)="toggleSection('contratos')"
@@ -202,69 +230,83 @@
 
         @if (sections.contratos) {
           <div class="overflow-x-auto animate-fade-in">
-            <table class="w-full text-left text-[11px]">
-              <thead
-                class="bg-[#f8f9fa] text-gray-400 font-bold uppercase tracking-tighter border-b border-gray-100"
-              >
-                <tr>
-                  <th class="px-8 py-4">Fecha de Creación</th>
-                  <th class="px-8 py-4">Tipo de Contrato</th>
-                  <th class="px-8 py-4">Nro de Contrato</th>
-                  <th class="px-8 py-4">Participantes</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-100">
-                @for (contrato of contratos; track contrato.numeroContrato) {
-                  <tr class="text-gray-600 hover:bg-gray-50 transition-colors">
-                    <td class="px-8 py-5">{{ contrato.fechaCreacion }}</td>
-                    <td class="px-8 py-5 italic text-gray-400">{{ contrato.tipoContrato }}</td>
-                    <td class="px-8 py-5 font-bold">{{ contrato.numeroContrato }}</td>
-                    <td class="px-8 py-5">{{ contrato.participantes }}</td>
+            @if (contratos.length > 0) {
+              <table class="w-full text-left text-[11px]">
+                <thead
+                  class="bg-[#f8f9fa] text-gray-400 font-bold uppercase tracking-tighter border-b border-gray-100"
+                >
+                  <tr>
+                    <th class="px-8 py-4">Fecha de Creación</th>
+                    <th class="px-8 py-4">Tipo de Contrato</th>
+                    <th class="px-8 py-4">Nro de Contrato</th>
+                    <th class="px-8 py-4">Participantes</th>
                   </tr>
-                }
-              </tbody>
-            </table>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                  @for (contrato of contratos; track contrato.numeroContrato) {
+                    <tr class="text-gray-600 hover:bg-gray-50 transition-colors">
+                      <td class="px-8 py-5">{{ contrato.fechaCreacion || '' }}</td>
+                      <td class="px-8 py-5 italic text-gray-400">
+                        {{ contrato.tipoContrato || '' }}
+                      </td>
+                      <td class="px-8 py-5 font-bold">{{ contrato.numeroContrato || '' }}</td>
+                      <td class="px-8 py-5">{{ contrato.participantes || '' }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            } @else {
+              <div class="p-8 text-center text-gray-400">
+                <p>No hay contratos registrados</p>
+              </div>
+            }
           </div>
         }
       </div>
 
-      <!-- Datos del cónyuge - Datos de ejemplo (no vienen de API) -->
-      <div>
+      <!-- Dependientes -->
+      <div class="border-b border-gray-100">
         <div
-          (click)="toggleSection('conyuge')"
+          (click)="toggleSection('dependientes')"
           class="bg-[#0070c0] text-white px-6 py-3 flex justify-between items-center cursor-pointer hover:bg-[#0062a8] transition-all"
         >
-          <h2 class="text-[13px] font-semibold tracking-wide uppercase">Datos del cónyuge</h2>
+          <h2 class="text-[13px] font-semibold tracking-wide uppercase">Dependientes</h2>
           <i
             class="fa-solid fa-chevron-up text-[10px] transition-transform duration-300"
-            [class.rotate-180]="!sections.conyuge"
+            [class.rotate-180]="!sections.dependientes"
           ></i>
         </div>
 
-        @if (sections.conyuge) {
-          <div class="p-8 animate-fade-in">
-            <div class="flex flex-col gap-1 mb-8">
-              <span class="text-[11px] text-gray-400 font-medium">Nombre Completo:</span>
-              <span class="text-[13px] font-bold text-gray-800">{{ datosConyuge.nombreCompleto }}</span>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-24">
-              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
-                <span class="text-[11px] text-gray-400 font-medium">Régimen:</span>
-                <span class="text-[12px] font-bold text-gray-800">{{ datosConyuge.regimen }}</span>
+        @if (sections.dependientes) {
+          <div class="overflow-x-auto animate-fade-in">
+            @if (dependientes.length > 0) {
+              <table class="w-full text-left text-[11px]">
+                <thead
+                  class="bg-[#f8f9fa] text-gray-400 font-bold uppercase tracking-tighter border-b border-gray-100"
+                >
+                  <tr>
+                    <th class="px-8 py-4">Tipo Documento</th>
+                    <th class="px-8 py-4">Número Documento</th>
+                    <th class="px-8 py-4">Nombres y Apellidos</th>
+                    <th class="px-8 py-4">Vinculación</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                  @for (dep of dependientes; track dep.NumeroDocumento) {
+                    <tr class="text-gray-600 hover:bg-gray-50 transition-colors">
+                      <td class="px-8 py-5">{{ dep.TipoDocumento || '' }}</td>
+                      <td class="px-8 py-5">{{ dep.NumeroDocumento || '' }}</td>
+                      <td class="px-8 py-5 font-bold">{{ dep.NombresApellidos || '' }}</td>
+                      <td class="px-8 py-5">{{ dep.VinculacionDescripcion || '' }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            } @else {
+              <div class="p-8 text-center text-gray-400">
+                <p>No hay dependientes registrados</p>
               </div>
-              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
-                <span class="text-[11px] text-gray-400 font-medium">Nacionalidad:</span>
-                <span class="text-[12px] font-bold text-gray-800">{{ datosConyuge.nacionalidad }}</span>
-              </div>
-              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
-                <span class="text-[11px] text-gray-400 font-medium">Tipo de Documento:</span>
-                <span class="text-[12px] font-bold text-gray-800">{{ datosConyuge.tipoDocumento }}</span>
-              </div>
-              <div class="flex justify-between items-end border-b border-gray-50 pb-1">
-                <span class="text-[11px] text-gray-400 font-medium">Nro de Documento:</span>
-                <span class="text-[12px] font-bold text-gray-800">{{ datosConyuge.numeroDocumento }}</span>
-              </div>
-            </div>
+            }
           </div>
         }
       </div>

@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { ClientesService } from '../../../../services/clientes.service';
 import { ClienteDetalle } from '../../../../interfaces/clienteDetalle.interface';
 
 @Component({
-   selector: 'app-detalle',
-  standalone: true, // ✅ Importante: igual que ListadoComponent
-  imports: [CommonModule, RouterModule], // ✅ Mismos imports que ListadoComponent
+  selector: 'app-detalle',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './detalle.component.html',
   styleUrls: ['./detalle.component.css'],
 })
@@ -15,95 +15,92 @@ export class DetalleComponent implements OnInit {
   sections = {
     principales: true,
     personales: true,
+    dependientes: true,
     contratos: true,
-    conyuge: true,
   };
 
   cliente: ClienteDetalle | null = null;
   loading: boolean = true;
   error: string = '';
-
-  // Datos de ejemplo (los que no vienen de la API)
-  datosPersonales = {
-    estadoCivil: 'Unión de hecho',
-    lugarNacimiento: 'Arequipa',
-    gradoInstruccion: 'Técnico',
-    ocupacion: 'Técnico electricista',
-    puesto: 'Gerente General',
-    departamento: 'Arequipa',
-    sexo: 'Masculino',
-    fechaNacimiento: '15/07/1988', // ✅ Agregado
-    nacionalidad: 'Peruana',
-    tipoTrabajo: 'Independiente',
-    razonSocial: 'Servicios Eléctricos Ramírez EIRL',
-    antiguedad: '8 años',
-    provincia: 'Arequipa'
-  };
-
-  // Datos de contratos (ejemplo)
-  contratos = [
-    {
-      fechaCreacion: '10/11/2023',
-      tipoContrato: 'Individual',
-      numeroContrato: '589741',
-      participantes: 'Luis Ramírez y Dana Estrada'
-    },
-    {
-      fechaCreacion: '10/11/2024',
-      tipoContrato: 'Mancomunado',
-      numeroContrato: '589742',
-      participantes: 'Luis Ramírez y Dana Estrada 2'
-    },
-    {
-      fechaCreacion: '10/11/2025',
-      tipoContrato: 'Individual',
-      numeroContrato: '589743',
-      participantes: 'Luis Ramírez y Dana Estrada 3'
-    }
-  ];
-
-  // Datos del cónyuge (ejemplo)
-  datosConyuge = {
-    nombreCompleto: 'Dana Cristina Estrada Fernández',
-    regimen: 'Sociedad de Gananciales',
-    nacionalidad: 'Peruana',
-    tipoDocumento: 'DNI',
-    numeroDocumento: '46781239'
-  };
+  perfilRiesgo: string = '';
+  dependientes: any[] = [];
+  contratos: any[] = [];
 
   constructor(
     private router: Router,
-    private clientesService: ClientesService
+    private route: ActivatedRoute,
+    private clientesService: ClientesService,
   ) {}
 
   ngOnInit(): void {
-    // Puedes pasar los parámetros desde la ruta o usar valores fijos para prueba
-    const tipoDocumento = '01'; // DNI
-    const numeroDocumento = '10265992';
-    this.cargarCliente(tipoDocumento, numeroDocumento);
+    this.route.queryParams.subscribe((params) => {
+      const tipoDocumento = params['TipoDocumento'] || '01';
+      const numeroDocumento = params['NumeroDocumento'] || '10265992';
+
+      this.cargarCliente(tipoDocumento, numeroDocumento);
+    });
   }
 
   cargarCliente(tipoDocumento: string, numeroDocumento: string): void {
     this.loading = true;
     this.error = '';
 
-    this.clientesService.buscarCliente(tipoDocumento, numeroDocumento)
-      .subscribe({
-        next: (response) => {
-          this.cliente = response;
-          this.loading = false;
-          console.log('Cliente cargado:', response);
-        },
-        error: (error) => {
-          console.error('Error al cargar cliente:', error);
-          this.error = 'No se pudo cargar la información del cliente';
-          this.loading = false;
+    this.clientesService.buscarCliente(tipoDocumento, numeroDocumento).subscribe({
+      next: (response: ClienteDetalle) => {
+        this.cliente = response;
+
+        // Extraer perfil de tolerancia al riesgo
+        if (response.PerfilTolerancia && response.PerfilTolerancia.length > 0) {
+          this.perfilRiesgo = response.PerfilTolerancia[0].Perfil;
         }
-      });
+
+        // Extraer dependientes
+        this.dependientes = response.Dependientes || [];
+        this.loading = false;
+      },
+      error: (error) => {
+        this.error = 'No se pudo cargar la información del cliente';
+        this.loading = false;
+      },
+    });
   }
 
-  irADetalle() {
-    this.router.navigate(['/clientes/detalle']);
+  getTipoDocumentoTexto(tipo: string): string {
+    const tipos: { [key: string]: string } = {
+      '01': 'DNI',
+      '04': 'Carnet de Extranjería',
+      '06': 'RUC',
+      '07': 'Pasaporte',
+    };
+    return tipos[tipo] || tipo;
+  }
+
+  getSexoTexto(sexo: string): string {
+    const sexos: { [key: string]: string } = {
+      '01': 'Masculino',
+      '02': 'Femenino',
+    };
+    return sexos[sexo] || sexo;
+  }
+
+  getEstadoCivilTexto(estado: string): string {
+    const estados: { [key: string]: string } = {
+      '01': 'Soltero/a',
+      '02': 'Casado/a',
+      '03': 'Divorciado/a',
+      '04': 'Viudo/a',
+      '05': 'Conviviente',
+    };
+    return estados[estado] || estado;
+  }
+
+  detalleCliente(tipoDocumento: string, numeroDocumento: string) {
+    this.router.navigate(['/clientes/detalle'], {
+      queryParams: {
+        TipoDocumento: tipoDocumento,
+        NumeroDocumento: numeroDocumento,
+      },
+    });
   }
 
   irAInversiones() {

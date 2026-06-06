@@ -1,10 +1,20 @@
-// Si solo necesitas la interfaz (recomendado)
-export interface Fondo {
-  nombre: string;
-  perfil: string;
-  estado: string;
-  colorClase: string;
+export interface ValorCuotaRequest {
   codFondo: string;
   codAdministradora: string;
   codFondoSerie: string;
+}
+
+export interface ValorCuotaResponse {
+  ValorCuotaInicial: number;
+  FechaCuota: string;
+  CodMoneda: string;
+  ValorTipoCambio: number;
+  CantCuotaInicio: number;
+  CantCuotaInicioPagada: number;
+  ValorCuotaInicialReal: number;
+  ValorCuotaNominal: number;
+  TipoFondo: string;
+  IndSerieMultiple: string;
+  CodPlanContable: string;
+  MontoPatrimonioInicial: number;
 }

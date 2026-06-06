@@ -1,5 +1,4 @@
 <div class="p-4 md:p-8 space-y-6 bg-[#f8f9fa] min-h-screen font-sans text-[#0e1b3d]">
-  
   <div class="bg-[#ebedef] p-6 rounded-xl border border-gray-200/60 shadow-sm">
     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-1">
       Módulo de Clientes
@@ -7,52 +6,110 @@
     <h1 class="text-3xl font-bold tracking-tight">Fondos</h1>
   </div>
 
+  <!-- Barra de búsqueda -->
   <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
     <div class="relative w-full">
-      <input 
-        type="text" 
-        placeholder="Buscar por nombre de fondos" 
+      <input
+        type="text"
+        [(ngModel)]="busqueda"
+        (input)="buscarFondos()"
+        placeholder="Buscar por nombre del fondo"
         class="w-full border border-gray-200 rounded-lg py-3 px-5 text-sm text-gray-600 focus:outline-none focus:border-[#0070c0] transition-colors placeholder:text-gray-300"
-      >
-      <button class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500">
-        <i class="fa-solid fa-circle-xmark text-lg"></i>
-      </button>
+      />
+      @if (busqueda) {
+        <button
+          (click)="limpiarBusqueda()"
+          class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500"
+        >
+          <i class="fa-solid fa-circle-xmark text-lg"></i>
+        </button>
+      }
     </div>
   </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-    @for (fondo of fondos; track fondo.nombre) {
-      <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow flex flex-col">
-        <div class="h-1.5 w-full" [ngClass]="fondo.colorClase"></div>
-        
-        <div class="p-6 flex-1">
-          <h2 class="text-2xl font-bold text-[#0070c0]">{{ fondo.nombre }}</h2>
-          
-          <div class="space-y-1 mt-4">
-            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Perfil de tolerancia</p>
-            <p class="text-sm font-bold text-[#0e1b3d]">{{ fondo.perfil }}</p>
+  <!-- Loading State -->
+  @if (loading) {
+    <div class="flex justify-center items-center h-64">
+      <div class="text-center">
+        <i class="fa-solid fa-spinner fa-spin text-4xl text-[#0070c0] mb-4"></i>
+        <p class="text-gray-500">Cargando fondos...</p>
+      </div>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (error && !loading) {
+    <div class="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+      <i class="fa-solid fa-circle-exclamation text-red-500 text-4xl mb-3"></i>
+      <p class="text-red-600">{{ error }}</p>
+    </div>
+  }
+
+  <!-- Grid de Fondos -->
+  @if (!loading && !error) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      @for (fondo of fondosFiltrados; track fondo.CodFondo + fondo.CodFondoSerie) {
+        <div
+          class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow flex flex-col"
+        >
+          <div class="h-1.5 w-full" [ngClass]="getColorClase(fondo.CodFondo)"></div>
+
+          <div class="p-6 flex-1">
+            <h2 class="text-xl font-bold text-[#0070c0]">{{ fondo.DescripFondo }}</h2>
+            <p class="text-xs text-gray-400 mt-1">{{ fondo.DescripFondoSerie }}</p>
+
+            <div class="space-y-1 mt-4">
+              <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Moneda</p>
+              <p class="text-sm font-bold text-[#0e1b3d]">{{ fondo.Moneda }}</p>
+            </div>
+
+            <div class="space-y-1 mt-3">
+              <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                Comisión de Rescate
+              </p>
+              <p class="text-sm font-bold text-[#0e1b3d]">
+                {{ fondo.TasaComisionRescate | number: '1.2-2' }}%
+              </p>
+            </div>
+
+            <div class="space-y-1 mt-3">
+              <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                Monto Mínimo Suscripción
+              </p>
+              <p class="text-sm font-bold text-[#0e1b3d]">
+                @if (fondo.Moneda === 'US$') {
+                  {{ fondo.MontoMinSuscripcion | currency: 'USD' : 'symbol' : '1.2-2' }}
+                } @else {
+                  S/. {{ fondo.MontoMinSuscripcion | number: '1.2-2' }}
+                }
+              </p>
+            </div>
           </div>
 
-          <div class="space-y-1 mt-4">
-            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Estado</p>
-            <p class="text-sm font-bold text-[#0e1b3d]">{{ fondo.estado }}</p>
+          <!-- Botón inferior derecha con routerLink y queryParams -->
+          <div class="p-6 pt-0 flex justify-end">
+            <a
+              [routerLink]="['/valor-cuota']"
+              [queryParams]="{
+                codFondo: fondo.CodFondo,
+                codAdministradora: fondo.CodAdministradora,
+                codFondoSerie: fondo.CodFondoSerie,
+              }"
+              class="bg-[#0070c0] hover:bg-[#005a9e] text-white text-sm font-semibold py-2 px-4 rounded-lg transition-colors shadow-sm inline-block text-center cursor-pointer"
+            >
+              Ver valor cuota
+            </a>
           </div>
         </div>
+      }
+    </div>
 
-        <!-- Botón inferior derecha con routerLink y queryParams -->
-        <div class="p-6 pt-0 flex justify-end">
-          <a 
-            [routerLink]="['/valor-cuota']"
-            [queryParams]="{
-              codFondo: fondo.codFondo,
-              codAdministradora: fondo.codAdministradora,
-              codFondoSerie: fondo.codFondoSerie
-            }"
-            class="bg-[#0070c0] hover:bg-[#005a9e] text-white text-sm font-semibold py-2 px-4 rounded-lg transition-colors shadow-sm inline-block text-center cursor-pointer">
-            Ver valor cuota
-          </a>
-        </div>
+    <!-- Sin resultados -->
+    @if (fondosFiltrados.length === 0) {
+      <div class="bg-white rounded-xl p-12 text-center text-gray-400">
+        <i class="fa-solid fa-search text-4xl mb-3 block"></i>
+        <p class="text-sm">No se encontraron fondos que coincidan con "{{ busqueda }}"</p>
       </div>
     }
-  </div>
+  }
 </div>
